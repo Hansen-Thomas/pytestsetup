@@ -22,4 +22,6 @@ def start_mappers():
             )
         },
     )
-    mapping_registry.map_imperatively(Tag, tag_table, properties={})
+    mapping_registry.map_imperatively(
+        Tag, tag_table, properties={}, confirm_deleted_rows=False
+    )
