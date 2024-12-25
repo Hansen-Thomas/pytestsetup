@@ -25,9 +25,8 @@ class AbstractCardRepository(ABC):
 
 
 class FakeCardRepository(AbstractCardRepository):
-    def __init__(self, fake_session) -> None:
-        self.fake_session = fake_session
-        self._cards: set[Card] = set()
+    def __init__(self, cards: set[Card]) -> None:
+        self._cards = set(cards)
 
     def add(self, card: Card) -> None:
         self._cards.add(card)

@@ -25,9 +25,8 @@ class AbstractTagRepository(ABC):
 
 
 class FakeTagRepository(AbstractTagRepository):
-    def __init__(self, fake_session) -> None:
-        self.fake_session = fake_session
-        self._tags: set[Tag] = set()
+    def __init__(self, tags: set[Tag]) -> None:
+        self._tags = set(tags)
 
     def add(self, tag: Tag) -> None:
         self._tags.add(tag)

@@ -5,17 +5,11 @@ from sqlalchemy.orm import sessionmaker, clear_mappers
 
 import database
 import database.orm as orm
-from test.utils.fake_session import FakeSession
-
-
-@pytest.fixture
-def fake_session():
-    return FakeSession()
 
 
 @pytest.fixture
 def engine():
-    engine = create_engine("sqlite:///pytest.db")
+    engine = create_engine(database.URL_OBJECT_UNIT_TESTS, echo=True)
     database.metadata.drop_all(bind=engine)
     database.metadata.create_all(bind=engine)
     return engine
@@ -24,8 +18,7 @@ def engine():
 @pytest.fixture
 def session(engine):
     orm.start_mappers()
-    Session = sessionmaker(bind=engine)
-    session = Session()
+    session = sessionmaker(bind=engine)()
     yield session
     session.close()
     clear_mappers()
