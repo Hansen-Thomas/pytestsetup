@@ -55,7 +55,7 @@ class DbTagRepository(AbstractTagRepository):
 
     def all(self) -> list[Tag]:
         stmt = select(Tag)
-        return list(self.session.scalars(stmt))
+        return self.session.scalars(stmt).all()
 
     def get_by_value(self, value: str) -> Tag | None:
         stmt = select(Tag).where(Tag.value == value)

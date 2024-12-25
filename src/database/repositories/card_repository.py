@@ -56,7 +56,7 @@ class DbCardRepository(AbstractCardRepository):
 
     def all(self) -> list[Card]:
         stmt = select(Card)
-        return list(self.session.scalars(stmt))
+        return self.session.scalars(stmt).all()
 
     def get(self, id: int) -> Card | None:
         stmt = select(Card).where(Card.id == id)
