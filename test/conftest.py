@@ -16,6 +16,13 @@ def engine():
 
 
 @pytest.fixture
+def session_factory(engine):
+    orm.start_mappers()
+    yield sessionmaker(bind=engine)
+    clear_mappers()
+
+
+@pytest.fixture
 def session(engine):
     orm.start_mappers()
     session = sessionmaker(bind=engine)()

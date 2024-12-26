@@ -14,6 +14,7 @@ def test_session_can_load_cards(session: Session):
         {"id": 2, "german": "der Baum", "italian": "l'albero"},
     ]
     plain_sql_utils.insert_cards(session=session, records=records)
+    session.commit()
 
     # Act:
     orm_stmt_select = select(Card)
@@ -34,6 +35,7 @@ def test_session_can_load_tags(session: Session):
         {"id": 8, "value": "Arbeit"},
     ]
     plain_sql_utils.insert_tags(session=session, records=records)
+    session.commit()
 
     # Act:
     orm_stmt_select = select(Tag)
@@ -54,12 +56,14 @@ def test_session_can_load_card_has_tag_association(session: Session):
         {"id": 2, "german": "der Baum", "italian": "l'albero"},
     ]
     plain_sql_utils.insert_cards(session=session, records=records_cards)
+    session.commit()
 
     records_tags = [
         {"id": 7, "value": "Urlaub"},
         {"id": 8, "value": "Arbeit"},
     ]
     plain_sql_utils.insert_tags(session=session, records=records_tags)
+    session.commit()
 
     records_association = [
         {"id_card": 1, "id_tag": 7},
@@ -67,6 +71,7 @@ def test_session_can_load_card_has_tag_association(session: Session):
         {"id_card": 2, "id_tag": 7},
     ]
     plain_sql_utils.insert_associations(session=session, records=records_association)
+    session.commit()
 
     # Act:
     orm_stmt_select = select(Card)
@@ -159,3 +164,29 @@ def test_session_can_save_card_has_tag_associations(session: Session):
         assert value in expected_tag_values
     for association in result_association:
         assert association in expected_associations
+
+
+def test_session_can_really_save_to_database(session_factory):
+    # Arrange:
+    session_to_insert: Session = session_factory()
+    records = [
+        {"id": 1, "german": "das Haus", "italian": "la casa"},
+        {"id": 2, "german": "der Baum", "italian": "l'albero"},
+    ]
+    plain_sql_utils.insert_cards(session=session_to_insert, records=records)
+    session_to_insert.commit()
+    session_to_insert.close()
+
+    # Act:
+    session_to_select: Session = session_factory()
+    stmt = select(Card)
+    result = session_to_select.scalars(stmt).all()
+    session_to_select.close()
+
+    # Assert:
+    expected = [
+        Card(1, "das Haus", "la casa"),
+        Card(2, "der Baum", "l'albero"),
+    ]
+    for card in result:
+        assert card in expected

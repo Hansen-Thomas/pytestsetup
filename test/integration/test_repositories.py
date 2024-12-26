@@ -6,6 +6,7 @@ from domain.card import Card
 
 import test.integration.integration_utils as plain_sql_utils
 
+
 def test_db_card_repo_can_add_card_with_tags(session: Session):
     # Arrange:
     card = Card()
@@ -50,12 +51,15 @@ def test_db_card_repo_can_retrieve_card_with_tags(session: Session):
         {"id": 12, "german": "die Antwort", "italian": "la risposta"},
     ]
     plain_sql_utils.insert_cards(session=session, records=records)
+    session.commit()
 
     records = [{"id": 3, "value": "Sprache"}, {"id": 5, "value": "Essen"}]
     plain_sql_utils.insert_tags(session=session, records=records)
-    
+    session.commit()
+
     records = [{"id_card": 7, "id_tag": 3}]
     plain_sql_utils.insert_associations(session=session, records=records)
+    session.commit()
 
     # Act:
     card_repo = DbCardRepository(session)
@@ -67,3 +71,4 @@ def test_db_card_repo_can_retrieve_card_with_tags(session: Session):
     assert card.italian == "la domanda"
     assert len(card.tags) == 1
     assert card.has_tag("Sprache")
+
