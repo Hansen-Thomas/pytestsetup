@@ -1,8 +1,10 @@
 from domain.card import Card
+from domain.word_type import WordType
 
 
 def test_card_can_solve_guesses():
     card = Card()
+    card.word_type = WordType.NOUN
     card.german = "die Antwort"
     card.italian = "la risposta"
     assert card.solve(solve_italian=True, guess="la risposta") is True
@@ -11,6 +13,7 @@ def test_card_can_solve_guesses():
 
 def test_card_can_calculate_statistics_after_solving():
     card = Card()
+    card.word_type = WordType.NOUN
     card.german = "die Antwort"
     card.italian = "la risposta"
     assert card.times_played == 0

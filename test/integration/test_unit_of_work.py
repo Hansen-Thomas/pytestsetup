@@ -12,7 +12,12 @@ def test_uow_can_get_card_and_add_tags_to_it(session_factory):
     # Arrange:
     session: Session = session_factory()
     records = [
-        {"id": 7, "word_type": "NOUN", "german": "die Frage", "italian": "la domanda"},
+        {
+            "id": 7,
+            "word_type": "NOUN",
+            "german": "die Frage",
+            "italian": "la domanda",
+        },
         {
             "id": 12,
             "word_type": "NOUN",
