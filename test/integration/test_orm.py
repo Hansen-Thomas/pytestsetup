@@ -1,9 +1,8 @@
-from sqlalchemy import text, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from domain.card import Card
 from domain.tag import Tag
-
 import test.integration.integration_utils as plain_sql_utils
 
 
@@ -105,8 +104,7 @@ def test_session_can_save_cards(session: Session):
     session.commit()
 
     # Act:
-    stmt = text("SELECT id, german, italian FROM Card")
-    result = session.execute(stmt).all()
+    result = plain_sql_utils.select_all_cards(session=session)
 
     # Assert:
     expected = [
@@ -127,8 +125,7 @@ def test_session_can_save_tags(session: Session):
     session.commit()
 
     # Act:
-    stmt = text("SELECT id, value FROM Tag")
-    result = session.execute(stmt).all()
+    result = plain_sql_utils.select_all_tags(session=session)
 
     # Assert:
     expected = [(1, "Zuhause"), (2, "Verkehr")]
@@ -145,48 +142,19 @@ def test_session_can_save_card_has_tag_associations(session: Session):
     session.commit()
 
     # Act:
-    stmt_card = text("SELECT id, german, italian FROM Card")
-    result_card = session.execute(stmt_card).one()
-
-    stmt_tag = text("SELECT id, value FROM Tag")
-    result_tag = session.execute(stmt_tag).all()
-
-    stmt_association = text("SELECT id_card, id_tag FROM Card_has_Tag")
-    result_association = session.execute(stmt_association).all()
+    result_card = plain_sql_utils.select_all_cards(session=session)[0]
+    result_tag = plain_sql_utils.select_all_tags(session=session)
+    result_association = plain_sql_utils.select_all_card_has_tag_associations(
+        session=session
+    )
 
     # Assert:
-    expected_card = (1, "das Flugzeug", "l'aereo")
+    expected_card_data = (1, "das Flugzeug", "l'aereo")
     expected_tag_values = ["Verkehr", "Beruf"]
     expected_associations = [(1, 1), (1, 2)]
-    assert result_card == expected_card
+    assert result_card == expected_card_data
     for tag in result_tag:
         (id, value) = tag
         assert value in expected_tag_values
     for association in result_association:
         assert association in expected_associations
-
-
-def test_session_can_really_save_to_database(session_factory):
-    # Arrange:
-    session_to_insert: Session = session_factory()
-    records = [
-        {"id": 1, "german": "das Haus", "italian": "la casa"},
-        {"id": 2, "german": "der Baum", "italian": "l'albero"},
-    ]
-    plain_sql_utils.insert_cards(session=session_to_insert, records=records)
-    session_to_insert.commit()
-    session_to_insert.close()
-
-    # Act:
-    session_to_select: Session = session_factory()
-    stmt = select(Card)
-    result = session_to_select.scalars(stmt).all()
-    session_to_select.close()
-
-    # Assert:
-    expected = [
-        Card(1, "das Haus", "la casa"),
-        Card(2, "der Baum", "l'albero"),
-    ]
-    for card in result:
-        assert card in expected

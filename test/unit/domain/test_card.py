@@ -1,7 +1,7 @@
 from domain.card import Card
 
 
-def test_create_simple_card():
+def test_card_can_solve_guesses():
     card = Card()
     card.german = "die Antwort"
     card.italian = "la risposta"
@@ -9,7 +9,7 @@ def test_create_simple_card():
     assert card.solve(solve_italian=True, guess="la domanda") is False
 
 
-def test_statistics_after_solving():
+def test_card_can_calculate_statistics_after_solving():
     card = Card()
     card.german = "die Antwort"
     card.italian = "la risposta"
@@ -40,7 +40,7 @@ def test_statistics_after_solving():
     assert card.last_played is not None
 
 
-def test_create_card_with_tags():
+def test_card_can_add_and_remove_tags():
     card = Card()
     card.add_tag("tag1")
     card.add_tag("tag2")

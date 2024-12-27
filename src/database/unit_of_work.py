@@ -23,15 +23,15 @@ class AbstractUnitOfWork(ABC):
     def __enter__(self) -> Self:
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args) -> None:
         self.rollback()
 
     @abstractmethod
-    def commit(self):
+    def commit(self) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    def rollback(self):
+    def rollback(self) -> None:
         raise NotImplementedError
 
 
@@ -41,10 +41,10 @@ class FakeUnitOfWork(AbstractUnitOfWork):
         self.tags = FakeTagRepository(set())
         self.committed = False
 
-    def commit(self):
+    def commit(self) -> None:
         self.committed = True
 
-    def rollback(self):
+    def rollback(self) -> None:
         pass
 
 
@@ -58,12 +58,12 @@ class DbUnitOfWork(AbstractUnitOfWork):
         self.tags = DbTagRepository(self.session)
         return super().__enter__()
 
-    def __exit__(self, *args):
+    def __exit__(self, *args) -> None:
         super().__exit__(*args)
         self.session.close()
 
-    def commit(self):
+    def commit(self) -> None:
         self.session.commit()
 
-    def rollback(self):
+    def rollback(self) -> None:
         self.session.rollback()

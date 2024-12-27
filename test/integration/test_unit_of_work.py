@@ -45,7 +45,7 @@ def test_uow_can_get_card_and_add_tags_to_it(session_factory):
         assert tag.value in expected_tag_values
 
 
-def test_rolls_back_uncommitted_work_by_default(session_factory):
+def test_uow_rolls_back_uncommitted_work_by_default(session_factory):
     # Arrange:
     session: Session = session_factory()
     records = [
@@ -71,7 +71,7 @@ def test_rolls_back_uncommitted_work_by_default(session_factory):
     assert list(card.tags) == []
 
 
-def test_rolls_back_on_error(session_factory):
+def test_uow_rolls_back_on_error(session_factory):
     class MyException(Exception):
         pass
 
