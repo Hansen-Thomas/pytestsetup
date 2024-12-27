@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 def insert_cards(session: Session, records):
     stmt = text(
         """
-        INSERT INTO Card (id, word_type, german, italian) 
-        VALUES (:id, :word_type, :german, :italian)
+        INSERT INTO Card (id, word_type, id_relevance, german, italian) 
+        VALUES (:id, :word_type, :id_relevance, :german, :italian)
         """
     )
     session.execute(stmt, records)
@@ -22,8 +22,13 @@ def insert_associations(session: Session, records):
     session.execute(stmt, records)
 
 
+def insert_relevance_levels(session: Session, records):
+    stmt = text("INSERT INTO Relevance (id, name) VALUES (:id, :name)")
+    session.execute(stmt, records)
+
+
 def select_all_cards(session: Session) -> list:
-    stmt = text("SELECT id, word_Type, german, italian FROM Card")
+    stmt = text("SELECT id, word_Type, id_relevance, german, italian FROM Card")
     return list(session.execute(stmt).all())
 
 

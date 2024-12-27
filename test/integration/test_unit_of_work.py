@@ -15,12 +15,14 @@ def test_uow_can_get_card_and_add_tags_to_it(session_factory):
         {
             "id": 7,
             "word_type": "NOUN",
+            "id_relevance": 1,
             "german": "die Frage",
             "italian": "la domanda",
         },
         {
             "id": 12,
             "word_type": "NOUN",
+            "id_relevance": 1,
             "german": "die Antwort",
             "italian": "la risposta",
         },
@@ -62,12 +64,14 @@ def test_uow_rolls_back_uncommitted_work_by_default(session_factory):
         {
             "id": 7,
             "word_type": "NOUN",
+            "id_relevance": 1,
             "german": "die Frage",
             "italian": "la domanda",
         },
         {
             "id": 12,
             "word_type": "NOUN",
+            "id_relevance": 1,
             "german": "die Antwort",
             "italian": "la risposta",
         },
@@ -102,12 +106,14 @@ def test_uow_rolls_back_on_error(session_factory):
                 {
                     "id": 7,
                     "word_type": "NOUN",
+                    "id_relevance": 1,
                     "german": "die Frage",
                     "italian": "la domanda",
                 },
                 {
                     "id": 12,
                     "word_type": "NOUN",
+                    "id_relevance": 1,
                     "german": "die Antwort",
                     "italian": "la risposta",
                 },
