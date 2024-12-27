@@ -9,8 +9,18 @@ def test_sqlalchemy_can_persist_data_in_unit_test_db(unit_test_engine):
 
     session_to_insert = session_factory()
     records = [
-        {"id": 1, "german": "das Haus", "italian": "la casa"},
-        {"id": 2, "german": "der Baum", "italian": "l'albero"},
+        {
+            "id": 1,
+            "word_type": "NOUN",
+            "german": "das Haus",
+            "italian": "la casa",
+        },
+        {
+            "id": 2,
+            "word_type": "NOUN",
+            "german": "der Baum",
+            "italian": "l'albero",
+        },
     ]
     plain_sql_utils.insert_cards(session=session_to_insert, records=records)
     session_to_insert.commit()
@@ -24,21 +34,31 @@ def test_sqlalchemy_can_persist_data_in_unit_test_db(unit_test_engine):
     # Assert:
     assert result
     expected = [
-        (1, "das Haus", "la casa"),
-        (2, "der Baum", "l'albero"),
+        (1, "NOUN", "das Haus", "la casa"),
+        (2, "NOUN", "der Baum", "l'albero"),
     ]
     for row in result:
         assert row in expected
 
 
 def test_sqlalchemy_does_not_persist_without_commit(unit_test_engine):
-        # Arrange:
+    # Arrange:
     session_factory = sessionmaker(bind=unit_test_engine)
 
     session_to_insert = session_factory()
     records = [
-        {"id": 1, "german": "das Haus", "italian": "la casa"},
-        {"id": 2, "german": "der Baum", "italian": "l'albero"},
+        {
+            "id": 1,
+            "word_type": "NOUN",
+            "german": "das Haus",
+            "italian": "la casa",
+        },
+        {
+            "id": 2,
+            "word_type": "NOUN",
+            "german": "der Baum",
+            "italian": "l'albero",
+        },
     ]
     plain_sql_utils.insert_cards(session=session_to_insert, records=records)
     # no commit! -> no effect in database

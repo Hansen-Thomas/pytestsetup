@@ -1,16 +1,19 @@
 import datetime
 
 from domain.tag import Tag
+from domain.word_type import WordType
 
 
 class Card:
     def __init__(
         self,
         id: int | None = None,
+        word_type: WordType = WordType.NONE,
         german: str = "",
         italian: str = "",
     ):
         self.id = id
+        self.word_type = word_type
         self.german = german
         self.italian = italian
         self.tags: set[Tag] = set()

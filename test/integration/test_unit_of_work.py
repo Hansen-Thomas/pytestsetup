@@ -12,8 +12,13 @@ def test_uow_can_get_card_and_add_tags_to_it(session_factory):
     # Arrange:
     session: Session = session_factory()
     records = [
-        {"id": 7, "german": "die Frage", "italian": "la domanda"},
-        {"id": 12, "german": "die Antwort", "italian": "la risposta"},
+        {"id": 7, "word_type": "NOUN", "german": "die Frage", "italian": "la domanda"},
+        {
+            "id": 12,
+            "word_type": "NOUN",
+            "german": "die Antwort",
+            "italian": "la risposta",
+        },
     ]
     plain_sql_utils.insert_cards(session=session, records=records)
     session.commit()
@@ -36,7 +41,7 @@ def test_uow_can_get_card_and_add_tags_to_it(session_factory):
     expected_card_tag_values = ["Sprache", "Test-Tag"]
     for value in expected_card_tag_values:
         assert card.has_tag(value)
-    
+
     stmt_tags = select(Tag)
     tags = session.scalars(stmt_tags).all()
     expected_tag_values = ["Sprache", "Test-Tag", "Tiere"]
@@ -49,8 +54,18 @@ def test_uow_rolls_back_uncommitted_work_by_default(session_factory):
     # Arrange:
     session: Session = session_factory()
     records = [
-        {"id": 7, "german": "die Frage", "italian": "la domanda"},
-        {"id": 12, "german": "die Antwort", "italian": "la risposta"},
+        {
+            "id": 7,
+            "word_type": "NOUN",
+            "german": "die Frage",
+            "italian": "la domanda",
+        },
+        {
+            "id": 12,
+            "word_type": "NOUN",
+            "german": "die Antwort",
+            "italian": "la risposta",
+        },
     ]
     plain_sql_utils.insert_cards(session=session, records=records)
     session.commit()
@@ -79,8 +94,18 @@ def test_uow_rolls_back_on_error(session_factory):
     with pytest.raises(MyException):
         with uow:
             records = [
-                {"id": 7, "german": "die Frage", "italian": "la domanda"},
-                {"id": 12, "german": "die Antwort", "italian": "la risposta"},
+                {
+                    "id": 7,
+                    "word_type": "NOUN",
+                    "german": "die Frage",
+                    "italian": "la domanda",
+                },
+                {
+                    "id": 12,
+                    "word_type": "NOUN",
+                    "german": "die Antwort",
+                    "italian": "la risposta",
+                },
             ]
             plain_sql_utils.insert_cards(session=uow.session, records=records)
             raise MyException()  # -> rollback!

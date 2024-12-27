@@ -3,14 +3,25 @@ from sqlalchemy.orm import Session
 
 from domain.card import Card
 from domain.tag import Tag
+from domain.word_type import WordType
 import test.integration.integration_utils as plain_sql_utils
 
 
 def test_session_can_load_cards(session: Session):
     # Arrange:
     records = [
-        {"id": 1, "german": "das Haus", "italian": "la casa"},
-        {"id": 2, "german": "der Baum", "italian": "l'albero"},
+        {
+            "id": 1,
+            "word_type": "NOUN",
+            "german": "das Haus",
+            "italian": "la casa",
+        },
+        {
+            "id": 2,
+            "word_type": "NOUN",
+            "german": "der Baum",
+            "italian": "l'albero",
+        },
     ]
     plain_sql_utils.insert_cards(session=session, records=records)
     session.commit()
@@ -21,8 +32,8 @@ def test_session_can_load_cards(session: Session):
 
     # Assert:
     expected = [
-        Card(id=1, german="das Haus", italian="la casa"),
-        Card(id=2, german="der Baum", italian="l'albero"),
+        Card(id=1, word_type=WordType.NOUN, german="das Haus", italian="la casa"),
+        Card(id=2, word_type=WordType.NOUN, german="der Baum", italian="l'albero"),
     ]
     assert result == expected
 
@@ -51,8 +62,18 @@ def test_session_can_load_tags(session: Session):
 def test_session_can_load_card_has_tag_association(session: Session):
     # Arrange:
     records_cards = [
-        {"id": 1, "german": "das Haus", "italian": "la casa"},
-        {"id": 2, "german": "der Baum", "italian": "l'albero"},
+        {
+            "id": 1,
+            "word_type": "NOUN",
+            "german": "das Haus",
+            "italian": "la casa",
+        },
+        {
+            "id": 2,
+            "word_type": "NOUN",
+            "german": "der Baum",
+            "italian": "l'albero",
+        },
     ]
     plain_sql_utils.insert_cards(session=session, records=records_cards)
     session.commit()
@@ -77,10 +98,20 @@ def test_session_can_load_card_has_tag_association(session: Session):
     result = session.scalars(orm_stmt_select).all()
 
     # Assert:
-    expected_card1 = Card(id=1, german="das Haus", italian="la casa")
+    expected_card1 = Card(
+        id=1,
+        word_type=WordType.NOUN,
+        german="das Haus",
+        italian="la casa",
+    )
     expected_tags_card1 = ["Urlaub", "Arbeit"]
 
-    expected_card2 = Card(id=2, german="der Baum", italian="l'albero")
+    expected_card2 = Card(
+        id=2,
+        word_type=WordType.NOUN,
+        german="der Baum",
+        italian="l'albero",
+    )
     expected_tags_card2 = ["Urlaub"]
 
     expected = [expected_card1, expected_card2]
@@ -97,8 +128,8 @@ def test_session_can_load_card_has_tag_association(session: Session):
 def test_session_can_save_cards(session: Session):
     # Arrange:
     cards_to_insert = [
-        Card(german="gehen", italian="andare"),
-        Card(german="fliegen", italian="volare"),
+        Card(word_type=WordType.VERB, german="gehen", italian="andare"),
+        Card(word_type=WordType.VERB, german="fliegen", italian="volare"),
     ]
     session.add_all(cards_to_insert)
     session.commit()
@@ -108,8 +139,8 @@ def test_session_can_save_cards(session: Session):
 
     # Assert:
     expected = [
-        (1, "gehen", "andare"),
-        (2, "fliegen", "volare"),
+        (1, "VERB", "gehen", "andare"),
+        (2, "VERB", "fliegen", "volare"),
     ]
     for row in result:
         assert row in expected
@@ -135,7 +166,7 @@ def test_session_can_save_tags(session: Session):
 
 def test_session_can_save_card_has_tag_associations(session: Session):
     # Arrange:
-    card = Card(german="das Flugzeug", italian="l'aereo")
+    card = Card(word_type=WordType.NOUN, german="das Flugzeug", italian="l'aereo")
     card.add_tag("Verkehr")
     card.add_tag("Beruf")
     session.add(card)
@@ -149,7 +180,7 @@ def test_session_can_save_card_has_tag_associations(session: Session):
     )
 
     # Assert:
-    expected_card_data = (1, "das Flugzeug", "l'aereo")
+    expected_card_data = (1, "NOUN", "das Flugzeug", "l'aereo")
     expected_tag_values = ["Verkehr", "Beruf"]
     expected_associations = [(1, 1), (1, 2)]
     assert result_card == expected_card_data

@@ -4,7 +4,10 @@ from sqlalchemy.orm import Session
 
 def insert_cards(session: Session, records):
     stmt = text(
-        "INSERT INTO Card (id, german, italian) VALUES (:id, :german, :italian)"
+        """
+        INSERT INTO Card (id, word_type, german, italian) 
+        VALUES (:id, :word_type, :german, :italian)
+        """
     )
     session.execute(stmt, records)
 
@@ -20,7 +23,7 @@ def insert_associations(session: Session, records):
 
 
 def select_all_cards(session: Session) -> list:
-    stmt = text("SELECT id, german, italian FROM Card")
+    stmt = text("SELECT id, word_Type, german, italian FROM Card")
     return list(session.execute(stmt).all())
 
 

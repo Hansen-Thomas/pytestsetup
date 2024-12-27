@@ -2,14 +2,25 @@ from sqlalchemy.orm import Session
 
 from database.repositories.card_repository import DbCardRepository
 from domain.card import Card
+from domain.word_type import WordType
 import test.integration.integration_utils as plain_sql_utils
 
 
 def test_db_card_repo_can_load_card_with_tags(session: Session):
     # Arrange:
     records = [
-        {"id": 7, "german": "die Frage", "italian": "la domanda"},
-        {"id": 12, "german": "die Antwort", "italian": "la risposta"},
+        {
+            "id": 7,
+            "word_type": "NOUN",
+            "german": "die Frage",
+            "italian": "la domanda",
+        },
+        {
+            "id": 12,
+            "word_type": "NOUN",
+            "german": "die Antwort",
+            "italian": "la risposta",
+        },
     ]
     plain_sql_utils.insert_cards(session=session, records=records)
     session.commit()
@@ -28,6 +39,7 @@ def test_db_card_repo_can_load_card_with_tags(session: Session):
 
     # Assert:
     assert card is not None
+    assert card.word_type == WordType.NOUN
     assert card.german == "die Frage"
     assert card.italian == "la domanda"
     assert len(card.tags) == 1
@@ -36,9 +48,11 @@ def test_db_card_repo_can_load_card_with_tags(session: Session):
 
 def test_db_card_repo_can_save_card_with_tags(session: Session):
     # Arrange:
-    card = Card()
-    card.german = "die Natur"
-    card.italian = "la natura"
+    card = Card(
+        word_type=WordType.NOUN,
+        german="die Natur",
+        italian="la natura",
+    )
     card.add_tag("Freizeit")
     card.add_tag("Person")
 
@@ -51,7 +65,7 @@ def test_db_card_repo_can_save_card_with_tags(session: Session):
 
     # table Card:
     result_cards = plain_sql_utils.select_all_cards(session=session)
-    expected_cards = [(1, "die Natur", "la natura")]
+    expected_cards = [(1, "NOUN", "die Natur", "la natura")]
     assert result_cards == expected_cards
 
     # table Tag:
