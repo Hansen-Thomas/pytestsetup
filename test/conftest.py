@@ -8,7 +8,7 @@ import database.orm as orm
 
 @pytest.fixture
 def local_unit_test_db_engine() -> Engine:
-    engine = create_engine(database.URL_OBJECT_UNIT_TESTS, echo=True)
+    engine = database._get_engine("local_db_unit_tests", echo=True)
     database.metadata.drop_all(bind=engine)
     database.metadata.create_all(bind=engine)
     return engine

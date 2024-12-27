@@ -80,9 +80,15 @@ logger.debug("configure db-connection based on config-file")
 # URL for the production-database:
 URL_OBJECT_PROD = URL.create(drivername="sqlite", database="production")
 URL_OBJECT_STAGE = URL.create(drivername="sqlite", database="stage.db")
-URL_OBJECT_UNIT_TESTS = URL.create(drivername="sqlite", database="pytest.db")
-# URL_OBJECT_UNIT_TESTS = URL.create(drivername="sqlite", database=":memory:")
+URL_OBJECT_UNIT_TESTS_LOCAL_DB = URL.create(drivername="sqlite", database="pytest.db")
+URL_OBJECT_UNIT_TESTS_IN_MEMORY = URL.create(drivername="sqlite", database=":memory:")
 
+CONNECTION_URLS = {
+    "production": URL_OBJECT_PROD,
+    "stage": URL_OBJECT_STAGE,
+    "local_db_unit_tests": URL_OBJECT_UNIT_TESTS_LOCAL_DB,
+    "in_memory_db_unit_tests": URL_OBJECT_UNIT_TESTS_IN_MEMORY,
+}
 
 # 3) setup engine and sessionmaker: -------------------------------------------
 
@@ -115,13 +121,11 @@ def get_session():
 #    the schema.
 
 
-def _get_engine(db: str, echo: bool = False) -> Engine:
-    if db == "Production":
-        _url = URL_OBJECT_PROD
-    else:
-        _url = URL_OBJECT_STAGE
-
-    engine = create_engine(_url, echo=echo)
+def _get_engine(url_key: str, echo: bool = False) -> Engine:
+    if url_key not in CONNECTION_URLS:
+        raise ValueError(f"url_key {url_key} not supported!")
+    url_object = CONNECTION_URLS[url_key]
+    engine = create_engine(url_object, echo=echo)
     return engine
 
 
