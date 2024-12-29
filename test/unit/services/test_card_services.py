@@ -11,14 +11,16 @@ def test_new_card_can_be_added():
     uow = FakeUnitOfWork()
     word_type = WordType.NONE
     relevance = Relevance(name="A")
-    new_card = add_new_card(
+    add_new_card(
         word_type=word_type,
         relevance=relevance,
         german="das Haus",
         italian="la casa",
         uow=uow,
     )
-    assert new_card is not None
+    with uow:
+        all_cards = uow.cards.all()
+        assert all_cards
 
 
 def test_duplicate_card_can_not_be_added(session_factory):
