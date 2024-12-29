@@ -48,9 +48,7 @@ class Card:
             return False
         else:
             return (
-                self.word_type == other.word_type
-                and self.relevance == other.relevance
-                and self.german == other.german
+                self.german == other.german
                 and self.italian == other.italian
             )
 

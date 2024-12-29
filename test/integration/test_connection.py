@@ -7,7 +7,7 @@ def test_connection_can_persist_data_in_unit_test_db(unit_test_engine: Engine):
     """
     # Arrange:
     with unit_test_engine.connect() as connection:
-        # insert relevance-records to use the later as foreign-keys:
+        # insert relevance-records to use them later as foreign-keys:
         stmt_insert_relevance = text(
             """
             INSERT INTO Relevance (id, name) VALUES (:id, :name)
