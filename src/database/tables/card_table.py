@@ -1,4 +1,12 @@
-from sqlalchemy import Table, Column, Enum, Integer, String, ForeignKey
+from sqlalchemy import (
+    Column,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    UniqueConstraint,
+)
 
 from database import metadata
 from domain.word_type import WordType
@@ -9,6 +17,7 @@ card_table = Table(
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("word_type", Enum(WordType)),
     Column("id_relevance", ForeignKey("Relevance.id")),
-    Column("german", String),
-    Column("italian", String),
+    Column("german", String, nullable=False),
+    Column("italian", String, nullable=False),
+    UniqueConstraint("german", "italian", name="uq_german_italian"),
 )

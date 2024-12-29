@@ -24,7 +24,7 @@ However, using the architecture-patterns suggested by Percival and Gregory means
 
 This project is about stepping back and setting up a tiny test-application to learn the architecture patterns and the two main frameworks SqlAlchemy and PyTest together with some Python-built-in-functionalities in a real-life-environment. We want to learn how these architecture patterns work in a setup that uses VSCode as an IDE, which can be a challenge on its own since plug-ins may behave differently after updates and so on. But still, VSCode is a free-to-use IDE with pretty good support, giving us actually all we need (including VCS, linters, formatters, test runners) for free.
 
-What we cut out here in this project is all about the frontend. We focus on developing a backend for a simple application that is able to be triggered by a frontend - no matter of what kind that frontend is. We will prepare the app to be part of a Web-App (so we will set up a FastAPI-frontend-controller to supply some web-routes to trigger the backend), but using the backend-services within a desktop-application would be possible without any problems, too.
+What we cut out here in this project is the frontend. However, we still add a Web-API to be able to do end-to-end-tests. We will set up a FastAPI-frontend-controller to supply some web-routes to trigger the backend, but using the backend-services e.g. within a desktop-application would be easily possible, too.
 
 ## About the example in this project
 

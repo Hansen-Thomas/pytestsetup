@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 from domain.relevance import Relevance
 from domain.tag import Tag
@@ -8,7 +9,7 @@ from domain.word_type import WordType
 class Card:
     def __init__(
         self,
-        id: int | None = None,
+        id: int | uuid.UUID | None = None,
         word_type: WordType = WordType.NONE,
         id_relevance: int | None = None,
         relevance: Relevance | None = None,
@@ -53,7 +54,7 @@ class Card:
             )
 
     def __hash__(self) -> int:
-        return hash(self.id)
+        return hash((self.german, self.italian))
 
     def solve(self, solve_italian: bool, guess: str) -> bool:
         if solve_italian:
