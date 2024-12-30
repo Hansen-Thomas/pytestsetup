@@ -6,6 +6,16 @@ import database
 import database.orm as orm
 
 
+@pytest.fixture()
+def reset_db(url_key: str = "local_db_unit_tests"):
+    engine = database._get_engine(url_key=url_key, echo=True)
+    database.metadata.drop_all(bind=engine)
+    database.metadata.create_all(bind=engine)
+    orm.start_mappers()
+    yield
+    clear_mappers()
+
+
 @pytest.fixture
 def unit_test_engine(url_key: str = "local_db_unit_tests") -> Engine:
     engine = database._get_engine(url_key=url_key, echo=True)

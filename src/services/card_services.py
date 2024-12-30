@@ -3,7 +3,6 @@ from sqlalchemy.exc import IntegrityError
 from database.repositories.card_repository import DuplicateCardException
 from database.unit_of_work import AbstractUnitOfWork
 from domain.card import Card
-from domain.relevance import Relevance
 from domain.word_type import WordType
 
 

@@ -14,9 +14,9 @@ def test_session_can_load_cards(session: Session):
     """
     # Arrange:
     records_relevance = [
-        {"id": 1, "name": "A - Beginner"},
-        {"id": 2, "name": "B - Intermediate"},
-        {"id": 3, "name": "C - Professional"},
+        {"id": 1, "description": "A - Beginner"},
+        {"id": 2, "description": "B - Intermediate"},
+        {"id": 3, "description": "C - Professional"},
     ]
     plain_sql_utils.insert_relevance_levels(
         session=session,
@@ -97,9 +97,9 @@ def test_session_can_load_card_has_tag_association(session: Session):
     """
     # Arrange:
     records_relevance = [
-        {"id": 1, "name": "A - Beginner"},
-        {"id": 2, "name": "B - Intermediate"},
-        {"id": 3, "name": "C - Professional"},
+        {"id": 1, "description": "A - Beginner"},
+        {"id": 2, "description": "B - Intermediate"},
+        {"id": 3, "description": "C - Professional"},
     ]
     plain_sql_utils.insert_relevance_levels(
         session=session,

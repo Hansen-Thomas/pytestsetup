@@ -54,7 +54,7 @@ class DbRelevanceRepository(AbstractRelevanceRepository):
 
     def all(self) -> list[Relevance]:
         stmt = select(Relevance)
-        return self.session.scalars(stmt).all()
+        return list(self.session.scalars(stmt).all())
 
     def get_by_description(self, description: str) -> Relevance | None:
         stmt = select(Relevance).where(Relevance.description == description)

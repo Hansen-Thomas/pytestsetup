@@ -93,8 +93,8 @@ CONNECTION_URLS = {
 # 3) setup engine and sessionmaker: -------------------------------------------
 
 # TODO: Modify later on to select DB by config-file
-logger.info("using database: stage")
-_engine = create_engine(URL_OBJECT_STAGE, echo=False)
+logger.info("using database: local_db_unit_tests")
+_engine = create_engine(URL_OBJECT_UNIT_TESTS_LOCAL_DB, echo=False)
 _SessionFactory = sessionmaker(bind=_engine)
 
 

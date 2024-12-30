@@ -6,5 +6,5 @@ relevance_table = Table(
     "Relevance",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("name", String, unique=True),
+    Column("description", String, unique=True),
 )

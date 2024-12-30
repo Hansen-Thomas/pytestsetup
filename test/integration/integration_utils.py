@@ -23,7 +23,7 @@ def insert_associations(session: Session, records):
 
 
 def insert_relevance_levels(session: Session, records):
-    stmt = text("INSERT INTO Relevance (id, name) VALUES (:id, :name)")
+    stmt = text("INSERT INTO Relevance (id, description) VALUES (:id, :description)")
     session.execute(stmt, records)
 
 

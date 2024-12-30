@@ -10,13 +10,13 @@ def test_connection_can_persist_data_in_unit_test_db(unit_test_engine: Engine):
         # insert relevance-records to use them later as foreign-keys:
         stmt_insert_relevance = text(
             """
-            INSERT INTO Relevance (id, name) VALUES (:id, :name)
+            INSERT INTO Relevance (id, description) VALUES (:id, :description)
             """
         )
         records_relevance = [
-            {"id": 1, "name": "A - Beginner"},
-            {"id": 2, "name": "B - Intermediate"},
-            {"id": 3, "name": "C - Professional"},
+            {"id": 1, "description": "A - Beginner"},
+            {"id": 2, "description": "B - Intermediate"},
+            {"id": 3, "description": "C - Professional"},
         ]
         connection.execute(stmt_insert_relevance, parameters=records_relevance)
 
@@ -71,13 +71,13 @@ def test_connection_does_not_persist_without_commit(unit_test_engine: Engine):
         # insert relevance-records to use the later as foreign-keys:
         stmt_insert_relevance = text(
             """
-            INSERT INTO Relevance (id, name) VALUES (:id, :name)
+            INSERT INTO Relevance (id, description) VALUES (:id, :description)
             """
         )
         records_relevance = [
-            {"id": 1, "name": "A - Beginner"},
-            {"id": 2, "name": "B - Intermediate"},
-            {"id": 3, "name": "C - Professional"},
+            {"id": 1, "description": "A - Beginner"},
+            {"id": 2, "description": "B - Intermediate"},
+            {"id": 3, "description": "C - Professional"},
         ]
         connection.execute(stmt_insert_relevance, parameters=records_relevance)
 
