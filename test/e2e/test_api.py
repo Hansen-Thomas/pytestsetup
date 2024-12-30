@@ -2,7 +2,6 @@ from fastapi.testclient import TestClient
 import pytest
 
 from app.main import app
-from database.repositories.card_repository import DbCardRepository
 from database.unit_of_work import DbUnitOfWork
 from domain.word_type import WordType
 
