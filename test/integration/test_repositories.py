@@ -54,7 +54,7 @@ def test_db_card_repo_can_save_card_with_tags(session: Session):
     # Arrange:
     card = Card(
         word_type=WordType.NOUN,
-        relevance=Relevance(name="A - Beginner"),
+        relevance=Relevance(description="A - Beginner"),
         german="die Natur",
         italian="la natura",
     )

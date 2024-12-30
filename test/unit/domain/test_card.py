@@ -61,8 +61,9 @@ def test_card_can_add_and_remove_tags():
 
 
 def test_card_equality():
-    relevance_A = Relevance(name="A-Level")
-    relevance_B = Relevance(name="B-Level")
+    """Only both the values for german and italian are relevant for equality."""
+    relevance_A = Relevance(description="A-Level")
+    relevance_B = Relevance(description="B-Level")
 
     card_1 = Card(
         word_type=WordType.NOUN,
@@ -89,7 +90,7 @@ def test_card_equality():
     )
     assert card_1 != card_2
 
-    # assert card with same word is equal even if word_type or relevance are 
+    # assert card with same word is equal even if word_type or relevance are
     # different:
     card_3 = Card(
         word_type=WordType.ADJECTIVE,

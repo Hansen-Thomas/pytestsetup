@@ -9,13 +9,16 @@ from domain.word_type import WordType
 
 def add_new_card(
     word_type: WordType,
-    relevance: Relevance,
+    relevance_description: str,
     german: str,
     italian: str,
     uow: AbstractUnitOfWork,
 ) -> None:
     try:
         with uow:
+            relevance = uow.relevance_levels.get_by_description(
+                description=relevance_description
+            )
             new_card = Card(
                 word_type=word_type,
                 relevance=relevance,

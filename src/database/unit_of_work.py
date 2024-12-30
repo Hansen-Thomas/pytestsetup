@@ -9,6 +9,11 @@ from database.repositories.card_repository import (
     FakeCardRepository,
     DbCardRepository,
 )
+from database.repositories.relevance_repository import (
+    AbstractRelevanceRepository,
+    FakeRelevanceRepository,
+    DbRelevanceRepository,
+)
 from database.repositories.tag_repository import (
     AbstractTagRepository,
     FakeTagRepository,
@@ -18,6 +23,7 @@ from database.repositories.tag_repository import (
 
 class AbstractUnitOfWork(ABC):
     cards: AbstractCardRepository
+    relevance_levels: AbstractRelevanceRepository
     tags: AbstractTagRepository
 
     def __enter__(self) -> Self:
@@ -38,6 +44,7 @@ class AbstractUnitOfWork(ABC):
 class FakeUnitOfWork(AbstractUnitOfWork):
     def __init__(self):
         self.cards = FakeCardRepository(set())
+        self.relevance_levels = FakeRelevanceRepository(set())
         self.tags = FakeTagRepository(set())
         self.committed = False
 
@@ -55,6 +62,7 @@ class DbUnitOfWork(AbstractUnitOfWork):
     def __enter__(self):
         self.session: Session = self.session_factory()
         self.cards = DbCardRepository(self.session)
+        self.relevance_levels = DbRelevanceRepository(self.session)
         self.tags = DbTagRepository(self.session)
         return super().__enter__()
 

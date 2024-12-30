@@ -51,14 +51,14 @@ def test_session_can_load_cards(session: Session):
         Card(
             id=1,
             word_type=WordType.NOUN,
-            relevance=Relevance(id=1, name="A - Beginner"),
+            relevance=Relevance(id=1, description="A - Beginner"),
             german="das Haus",
             italian="la casa",
         ),
         Card(
             id=2,
             word_type=WordType.NOUN,
-            relevance=Relevance(id=2, name="B - Intermediate"),
+            relevance=Relevance(id=2, description="B - Intermediate"),
             german="der Baum",
             italian="l'albero",
         ),
@@ -148,7 +148,7 @@ def test_session_can_load_card_has_tag_association(session: Session):
     expected_card1 = Card(
         id=1,
         word_type=WordType.NOUN,
-        relevance=Relevance(id=1, name="A - Beginner"),
+        relevance=Relevance(id=1, description="A - Beginner"),
         german="das Haus",
         italian="la casa",
     )
@@ -157,7 +157,7 @@ def test_session_can_load_card_has_tag_association(session: Session):
     expected_card2 = Card(
         id=2,
         word_type=WordType.NOUN,
-        relevance=Relevance(id=2, name="B - Intermediate"),
+        relevance=Relevance(id=2, description="B - Intermediate"),
         german="der Baum",
         italian="l'albero",
     )
@@ -179,7 +179,7 @@ def test_session_can_save_cards(session: Session):
     Proofs that the ORM for cards is properly set up to save data.
     """
     # Arrange:
-    relevance_1 = Relevance(name="A - Beginner")
+    relevance_1 = Relevance(description="A - Beginner")
     cards_to_insert = [
         Card(
             word_type=WordType.VERB,
@@ -237,7 +237,7 @@ def test_session_can_save_card_has_tag_associations(session: Session):
     # Arrange:
     card = Card(
         word_type=WordType.NOUN,
-        relevance=Relevance(name="A - Beginner"),
+        relevance=Relevance(description="A - Beginner"),
         german="das Flugzeug",
         italian="l'aereo",
     )
