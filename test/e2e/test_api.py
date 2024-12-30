@@ -2,6 +2,8 @@ from fastapi.testclient import TestClient
 import pytest
 
 from app.main import app
+from database.repositories.card_repository import DbCardRepository
+from database.unit_of_work import DbUnitOfWork
 from domain.word_type import WordType
 
 
@@ -26,6 +28,14 @@ def test_add_card_happy_path():
         },
     )
     assert response.status_code == 200
+
+    uow = DbUnitOfWork()
+    with uow:
+        all_cards = uow.cards.all()
+        assert len(all_cards) == 1
+        card = all_cards[0]
+        assert card.german == "haben"
+        assert card.italian == "avere"
 
 
 
