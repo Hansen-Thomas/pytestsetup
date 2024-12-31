@@ -1,3 +1,5 @@
+import json
+
 from fastapi.testclient import TestClient
 import pytest
 
@@ -11,23 +13,23 @@ testclient = TestClient(app=app)
 
 @pytest.mark.usefixtures("reset_db_for_e2e_tests")
 def test_add_card_happy_path():
-    word_type = WordType.VERB
-    relevance_description = "A - Beginner"
-    german = "haben"
-    italian = "avere"
+    # card data:
+    data = {
+        "word_type": WordType.VERB.value,
+        "relevance_description": "A - Beginner",
+        "german": "haben",
+        "italian": "avere",
+    }
 
+    # add card:
     response = testclient.post(
         "/cards",
         headers={},
-        json={
-            "word_type": word_type.value,
-            "relevance_description": relevance_description,
-            "german": german,
-            "italian": italian,
-        },
+        json=data,
     )
     assert response.status_code == 200
 
+    # inspect result:
     uow = DbUnitOfWork()
     with uow:
         all_cards = uow.cards.all()
@@ -37,11 +39,30 @@ def test_add_card_happy_path():
         assert card.italian == "avere"
 
 
+@pytest.mark.usefixtures("reset_db_for_e2e_tests")
+def test_add_card_unhappy_path_returns_400_and_error_message():
+    # card data:
+    data = {
+        "word_type": WordType.VERB.value,
+        "relevance_description": "A - Beginner",
+        "german": "haben",
+        "italian": "avere",
+    }
 
-# def test_unhappy_path_returns_400_and_error_message():
-#     unknown_sku, orderid = random_sku(), random_orderid()
-#     data = {"orderid": orderid, "sku": unknown_sku, "qty": 20}
-#     url = config.get_api_url()
-#     r = requests.post(f"{url}/allocate", json=data)
-#     assert r.status_code == 400
-#     assert r.json()["message"] == f"Invalid sku {unknown_sku}"
+    # add card:
+    response = testclient.post(
+        "/cards",
+        headers={},
+        json=data,
+    )
+    assert response.status_code == 200
+
+    # add same card again:
+    response = testclient.post(
+        "/cards",
+        headers={},
+        json=data,
+    )
+    assert response.status_code == 400
+    content = json.loads(response.content)
+    assert content["detail"] == "Card already exists!"

@@ -68,6 +68,7 @@ Example usage for a session (with ORM): ---------------------------------------
 
 
 metadata = MetaData()
+import database.tables  # by that the metadata-object is initialized.
 
 
 # 2) setup the database-URL-objects: ------------------------------------------
