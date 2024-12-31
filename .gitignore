@@ -12,3 +12,4 @@ wheels/
 
 # Databases
 pytest.db
+stage.db
