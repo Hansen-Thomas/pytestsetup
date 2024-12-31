@@ -7,7 +7,6 @@ from services.card_services import add_new_card
 
 
 def test_new_card_can_be_added(session_factory):
-    # uow = FakeUnitOfWork()
     uow = DbUnitOfWork(session_factory=session_factory)
     add_new_card(
         word_type=WordType.NONE,

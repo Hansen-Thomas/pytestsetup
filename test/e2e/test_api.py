@@ -9,7 +9,7 @@ from domain.word_type import WordType
 testclient = TestClient(app=app)
 
 
-@pytest.mark.usefixtures("reset_db")
+@pytest.mark.usefixtures("reset_db_for_e2e_tests")
 def test_add_card_happy_path():
     word_type = WordType.VERB
     relevance_description = "A - Beginner"

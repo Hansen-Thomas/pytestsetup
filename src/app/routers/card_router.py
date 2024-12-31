@@ -17,12 +17,12 @@ class CardInputModel(BaseModel):
 
 
 @router.post("/cards")
-def add_card(card: CardInputModel):
+def add_card(card_input: CardInputModel):
     uow = DbUnitOfWork()
     add_new_card(
-        word_type=card.word_type,
-        relevance_description=card.relevance_description,
-        german=card.german,
-        italian=card.italian,
+        word_type=card_input.word_type,
+        relevance_description=card_input.relevance_description,
+        german=card_input.german,
+        italian=card_input.italian,
         uow=uow,
     )

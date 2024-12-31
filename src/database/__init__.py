@@ -1,4 +1,5 @@
 import logging
+import os
 
 from sqlalchemy import Connection, Engine, MetaData, URL, create_engine
 from sqlalchemy.orm import sessionmaker
@@ -69,15 +70,8 @@ Example usage for a session (with ORM): ---------------------------------------
 metadata = MetaData()
 
 
-# 2) setup the database-URL-objects (based on the config-file): ---------------
+# 2) setup the database-URL-objects: ------------------------------------------
 
-
-logger = logging.getLogger(__name__)
-logger.debug("configure db-connection based on config-file")
-
-# Create connection-URLs:
-
-# URL for the production-database:
 URL_OBJECT_PROD = URL.create(drivername="sqlite", database="production")
 URL_OBJECT_STAGE = URL.create(drivername="sqlite", database="stage.db")
 URL_OBJECT_UNIT_TESTS_LOCAL_DB = URL.create(drivername="sqlite", database="pytest.db")
@@ -92,9 +86,15 @@ CONNECTION_URLS = {
 
 # 3) setup engine and sessionmaker: -------------------------------------------
 
-# TODO: Modify later on to select DB by config-file
-logger.info("using database: local_db_unit_tests")
-_engine = create_engine(URL_OBJECT_UNIT_TESTS_LOCAL_DB, echo=False)
+logger = logging.getLogger(__name__)
+_use_db = os.environ.get("USE_DB", "local_db_unit_tests")
+if _use_db not in CONNECTION_URLS:
+    raise ValueError(f'Value "{_use_db}" is not allowed for param "USE_DB"!')
+
+logger.info(f"using database: {_use_db}")
+_url_object = CONNECTION_URLS[_use_db]
+
+_engine = create_engine(_url_object, echo=False)
 _SessionFactory = sessionmaker(bind=_engine)
 
 
