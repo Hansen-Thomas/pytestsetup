@@ -37,6 +37,7 @@ def test_add_card_happy_path():
         card = all_cards[0]
         assert card.german == "haben"
         assert card.italian == "avere"
+        assert card.relevance.description == "A - Beginner"
 
 
 @pytest.mark.usefixtures("reset_db_for_e2e_tests")

@@ -3,6 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from database.repositories.card_repository import DuplicateCardException
 from database.unit_of_work import AbstractUnitOfWork
 from domain.card import Card
+from domain.relevance import Relevance
 from domain.word_type import WordType
 
 
@@ -18,6 +19,9 @@ def add_new_card(
             relevance = uow.relevance_levels.get_by_description(
                 description=relevance_description
             )
+            if not relevance:
+                relevance = Relevance(description=relevance_description)
+                uow.relevance_levels.add(relevance)
             new_card = Card(
                 word_type=word_type,
                 relevance=relevance,
