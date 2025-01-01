@@ -1,5 +1,3 @@
-import json
-
 from fastapi.testclient import TestClient
 import pytest
 
@@ -65,5 +63,5 @@ def test_add_card_unhappy_path_returns_400_and_error_message():
         json=data,
     )
     assert response.status_code == 400
-    content = json.loads(response.content)
+    content = response.json()
     assert content["detail"] == "Card already exists!"
