@@ -16,6 +16,14 @@
             "jinja": true
         },
         {
+            "name": "Main Web",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "src/app/main.py",
+            "console": "integratedTerminal",
+            "jinja": true
+        },
+        {
             "name": "Python Debugger: Current File",
             "type": "debugpy",
             "request": "launch",
