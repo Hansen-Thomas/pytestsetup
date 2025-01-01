@@ -1,16 +1,10 @@
 from fastapi.testclient import TestClient
-import pytest
 
-from app.main import app
 from database.unit_of_work import DbUnitOfWork
 from domain.word_type import WordType
 
 
-testclient = TestClient(app=app)
-
-
-@pytest.mark.usefixtures("reset_db_for_e2e_tests")
-def test_add_card_happy_path():
+def test_add_card_happy_path(client: TestClient, session_factory):
     # card data:
     data = {
         "word_type": WordType.VERB.value,
@@ -20,7 +14,7 @@ def test_add_card_happy_path():
     }
 
     # add card:
-    response = testclient.post(
+    response = client.post(
         "/cards",
         headers={},
         json=data,
@@ -28,7 +22,7 @@ def test_add_card_happy_path():
     assert response.status_code == 200
 
     # inspect result:
-    uow = DbUnitOfWork()
+    uow = DbUnitOfWork(session_factory=session_factory)
     with uow:
         all_cards = uow.cards.all()
         assert len(all_cards) == 1
@@ -38,8 +32,7 @@ def test_add_card_happy_path():
         assert card.relevance.description == "A - Beginner"
 
 
-@pytest.mark.usefixtures("reset_db_for_e2e_tests")
-def test_add_card_unhappy_path_returns_400_and_error_message():
+def test_add_card_unhappy_path_returns_400_and_error_message(client: TestClient):
     # card data:
     data = {
         "word_type": WordType.VERB.value,
@@ -49,7 +42,7 @@ def test_add_card_unhappy_path_returns_400_and_error_message():
     }
 
     # add card:
-    response = testclient.post(
+    response = client.post(
         "/cards",
         headers={},
         json=data,
@@ -57,7 +50,7 @@ def test_add_card_unhappy_path_returns_400_and_error_message():
     assert response.status_code == 200
 
     # add same card again:
-    response = testclient.post(
+    response = client.post(
         "/cards",
         headers={},
         json=data,

@@ -1,8 +1,9 @@
 import logging
 import os
+from typing import Generator
 
-from sqlalchemy import Connection, Engine, MetaData, URL, create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import Connection, Engine, MetaData, URL, create_engine, StaticPool
+from sqlalchemy.orm import sessionmaker, Session
 
 """
 This module provides basic database-access for all other modules of the
@@ -68,12 +69,12 @@ Example usage for a session (with ORM): ---------------------------------------
 
 
 metadata = MetaData()
-import database.tables  # by that the metadata-object is initialized.
+import database.tables  # ensures that all tables are loaded into the metadata.
 
 
 # 2) setup the database-URL-objects: ------------------------------------------
 
-URL_OBJECT_PROD = URL.create(drivername="sqlite", database="production")
+URL_OBJECT_PROD = URL.create(drivername="sqlite", database="production.db")
 URL_OBJECT_STAGE = URL.create(drivername="sqlite", database="stage.db")
 URL_OBJECT_UNIT_TESTS_LOCAL_DB = URL.create(drivername="sqlite", database="pytest.db")
 URL_OBJECT_UNIT_TESTS_IN_MEMORY = URL.create(drivername="sqlite", database=":memory:")
@@ -95,7 +96,15 @@ if _use_db not in CONNECTION_URLS:
 logger.info(f"using database: {_use_db}")
 _url_object = CONNECTION_URLS[_use_db]
 
-_engine = create_engine(_url_object, echo=False)
+if _use_db == "in_memory_db_unit_tests":
+    _engine = create_engine(
+        "sqlite://",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+        echo=True,
+    )
+else:
+    _engine = create_engine(_url_object, echo=False)
 _SessionFactory = sessionmaker(bind=_engine)
 
 
@@ -106,13 +115,14 @@ def get_connection() -> Connection:
     return _engine.connect()
 
 
-def get_session():
-    try:
-        session = _SessionFactory()
+def get_session() -> Generator[Session, None, None]:
+    with _SessionFactory() as session:
         yield session
-    finally:
-        session.close()
         print(f"Status connection-pool: {_engine.pool.status()}")
+
+
+def get_session_factory() -> sessionmaker:
+    return _SessionFactory
 
 
 # 5) Provide other utility functions: -----------------------------------------
@@ -125,8 +135,17 @@ def get_session():
 def _get_engine(url_key: str, echo: bool = False) -> Engine:
     if url_key not in CONNECTION_URLS:
         raise ValueError(f"url_key {url_key} not supported!")
-    url_object = CONNECTION_URLS[url_key]
-    engine = create_engine(url_object, echo=echo)
+    
+    if _use_db == "in_memory_db_unit_tests":
+        engine = create_engine(
+            "sqlite://",
+            connect_args={"check_same_thread": False},
+            poolclass=StaticPool,
+            echo=True,
+        )
+    else:
+        url_object = CONNECTION_URLS[url_key]
+        engine = create_engine(url_object, echo=echo)
     return engine
 
 

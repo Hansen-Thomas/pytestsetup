@@ -5,11 +5,11 @@ from fastapi import FastAPI
 from .routers import card_router
 
 
-if "database.orm" not in sys.modules:
-    # ensure the orm is started:
-    import database.orm as orm
+# if "database.orm" not in sys.modules:
+#     # ensure the orm is started:
+#     import database.orm as orm
 
-    orm.start_mappers()
+#     orm.start_mappers()
 
 
 app = FastAPI()

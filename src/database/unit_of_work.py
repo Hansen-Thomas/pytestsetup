@@ -3,7 +3,6 @@ from typing import Self
 
 from sqlalchemy.orm import Session, sessionmaker
 
-from database import _SessionFactory
 from database.repositories.card_repository import (
     AbstractCardRepository,
     FakeCardRepository,
@@ -55,23 +54,18 @@ class FakeUnitOfWork(AbstractUnitOfWork):
         pass
 
 
-DEFAULT_SESSION_FACTORY = _SessionFactory
-# this variable will be overwritten in e2e-tests to point to the 
-# unit-test-database no matter what's currently configured in the
-# database-module.
-
-
 class DbUnitOfWork(AbstractUnitOfWork):
-    def __init__(self, session_factory: sessionmaker | None = None):
-        if not session_factory:
-            session_factory = DEFAULT_SESSION_FACTORY
+    def __init__(self, session_factory: sessionmaker):
+        """The session_factory decides which database to use."""
         self.session_factory = session_factory
 
     def __enter__(self):
         self.session: Session = self.session_factory()
+
         self.cards = DbCardRepository(self.session)
         self.relevance_levels = DbRelevanceRepository(self.session)
         self.tags = DbTagRepository(self.session)
+
         return super().__enter__()
 
     def __exit__(self, *args) -> None:
