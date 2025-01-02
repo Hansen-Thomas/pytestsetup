@@ -25,7 +25,8 @@ jobs:
 
       - name: Run tests
         # For example, using `pytest`
-        run: uv run pytest test/unit
+        # run: uv run pytest test/unit
+        run: uv run pytest
         # run: uv run pytest --junitxml=pytest-report.xml test/unit
 
       # - name: Save test results
