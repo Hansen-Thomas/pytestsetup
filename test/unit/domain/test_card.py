@@ -48,7 +48,6 @@ def test_card_can_add_and_remove_tags():
     card = Card()
     card.add_tag("tag1")
     card.add_tag("tag2")
-    assert False
     assert card.has_tag("tag1")
     assert card.has_tag("tag2")
     assert not card.has_tag("tag3")
