@@ -5,7 +5,7 @@ on:
 
 jobs:
   automate-unit-tests:
-    name: python
+    name: CI - Unit tests
     runs-on: windows-latest
 
     steps:
@@ -26,9 +26,7 @@ jobs:
       - name: Run tests
         # For example, using `pytest`
         # run: uv run pytest test/unit
-        run: |
-           uv run pytest --junitxml=pytest-report.xml test/unit
-        continue-on-error: true
+        run: uv run pytest --junitxml=pytest-report.xml test/unit
 
       - name: Save test results
         uses: actions/upload-artifact@v4
