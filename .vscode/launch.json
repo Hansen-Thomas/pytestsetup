@@ -4,19 +4,19 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        // {
+        //     "name": "Python Debugger: FastAPI",
+        //     "type": "debugpy",
+        //     "request": "launch",
+        //     "module": "uvicorn",
+        //     "args": [
+        //         "app.main:app",
+        //         "--reload"
+        //     ],
+        //     "jinja": true
+        // },
         {
-            "name": "Python Debugger: FastAPI",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "uvicorn",
-            "args": [
-                "app.main:app",
-                "--reload"
-            ],
-            "jinja": true
-        },
-        {
-            "name": "Main Web",
+            "name": "Run FastAPI (with Debugger)",
             "type": "debugpy",
             "request": "launch",
             "program": "src/app/main.py",
