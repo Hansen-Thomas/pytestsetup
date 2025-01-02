@@ -4,14 +4,9 @@ on:
   push:
 
 jobs:
-  test_model_services:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest]  
-        python-version: [3.13]
+  automate-unit-tests:
+    name: python
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
