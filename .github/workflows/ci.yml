@@ -34,6 +34,11 @@ jobs:
         run: |
           uv sync
 
+      - name: Activate virtual environment
+        shell: cmd
+        run: |
+          .venv\Scripts\activate
+
       - name: Verify installed packages
         run: |
           uv pip list
