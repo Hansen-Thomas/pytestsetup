@@ -33,11 +33,11 @@ jobs:
 
       - name: Add src and virtual environment to PYTHONPATH
         run: |
-          echo "PYTHONPATH=${{ github.workspace }}/src:${{ github.workspace }}/.venv/Lib/site-packages" >> $GITHUB_ENV
+          echo "PYTHONPATH=${{ github.workspace }}\\src;${{ github.workspace }}\\.venv\\Lib\\site-packages" >> $GITHUB_ENV
 
       - name: Verify PYTHONPATH and Import Modules
         env: # Use environment variables explicitly here
-          PYTHONPATH: ${{ github.workspace }}/src:${{ github.workspace }}/.venv/Lib/site-packages
+          PYTHONPATH: ${{ github.workspace }}/src;${{ github.workspace }}/.venv/Lib/site-packages
         run: |
           echo "PYTHONPATH is: $PYTHONPATH"
           python -c "import sys; print('PYTHONPATH:', sys.path)"
@@ -45,6 +45,6 @@ jobs:
 
       - name: Run tests
         env:
-          PYTHONPATH: ${{ github.workspace }}/src:${{ github.workspace }}/.venv/Lib/site-packages
+          PYTHONPATH: ${{ github.workspace }}/src;${{ github.workspace }}/.venv/Lib/site-packages
         run: |
           pytest test/unit
