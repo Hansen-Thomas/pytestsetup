@@ -11,7 +11,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest]  
-        python-version: [3.11, 3.12]  
+        python-version: [3.11, 3.12]
+        
+    env:
+      PYTHONPATH: ${{ github.workspace }}/src
 
     steps:
       - name: Checkout code
@@ -31,11 +34,11 @@ jobs:
         run: |
           uv sync
 
-      # Add src/ to PYTHONPATH
-      - name: Add src to PYTHONPATH
-        run: |
-          echo "Adding src to PYTHONPATH"
-          echo "PYTHONPATH=$GITHUB_WORKSPACE/src" >> $GITHUB_ENV
+      # # Add src/ to PYTHONPATH
+      # - name: Add src to PYTHONPATH
+      #   run: |
+      #     echo "Adding src to PYTHONPATH"
+      #     echo "PYTHONPATH=$GITHUB_WORKSPACE/src" >> $GITHUB_ENV
 
       # Verify the PYTHONPATH (print it out to logs)
       - name: Verify PYTHONPATH
