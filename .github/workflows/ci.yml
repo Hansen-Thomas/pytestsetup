@@ -13,8 +13,8 @@ jobs:
         os: [windows-latest]  
         python-version: [3.11, 3.12]
         
-    env:
-      PYTHONPATH: ${{ github.workspace }}/src
+    # env:
+    #   PYTHONPATH: ${{ github.workspace }}/src
 
     steps:
       - name: Checkout code
