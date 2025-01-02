@@ -42,9 +42,15 @@ jobs:
           echo "PYTHONPATH is: $PYTHONPATH"
           python -c "import sys; print('PYTHONPATH:', sys.path)"
           python -c "import database; print('Module imported successfully')"
-
-      - name: Run tests
-        env:
-          PYTHONPATH: ${{ github.workspace }}/src;${{ github.workspace }}/.venv/Lib/site-packages
+        
+      - name: Activate virtual environment and run tests
+        shell: pwsh
         run: |
+          $env:PATH = "${{ github.workspace }}\.venv\bin;$env:PATH"
           pytest test/unit
+
+      # - name: Run tests
+      #   env:
+      #     PYTHONPATH: ${{ github.workspace }}/src;${{ github.workspace }}/.venv/Lib/site-packages
+      #   run: |
+      #     pytest test/unit
