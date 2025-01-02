@@ -27,7 +27,7 @@ jobs:
         # For example, using `pytest`
         # run: uv run pytest test/unit
         run: |
-           uv pytest --junitxml=pytest-report.xml test/unit
+           uv run pytest --junitxml=pytest-report.xml test/unit
         continue-on-error: true
 
       - name: Save test results
