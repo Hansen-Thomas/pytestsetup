@@ -36,7 +36,7 @@ jobs:
 
       - name: Add virtual environment to PYTHONPATH
         run: |
-          echo "PYTHONPATH=${{ github.workspace }}/src:${{ github.workspace }}/.venv/Lib/site-packages" >> $GITHUB_ENV
+          echo "PYTHONPATH=${{ github.workspace }}/src;${{ github.workspace }}/.venv/Lib/site-packages" >> $GITHUB_ENV
 
       # # Add src/ to PYTHONPATH
       # - name: Add src to PYTHONPATH
