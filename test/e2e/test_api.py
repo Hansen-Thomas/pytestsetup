@@ -27,6 +27,7 @@ def test_add_card_happy_path(client: TestClient, session_factory):
         all_cards = uow.cards.all()
         assert len(all_cards) == 1
         card = all_cards[0]
+        assert False
         assert card.german == "haben"
         assert card.italian == "avere"
         assert card.relevance.description == "A - Beginner"
