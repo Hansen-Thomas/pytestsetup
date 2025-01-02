@@ -11,10 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest]  
-        python-version: [3.11, 3.12]
-        
-    # env:
-    #   PYTHONPATH: ${{ github.workspace }}/src
+        python-version: [3.13,]
 
     steps:
       - name: Checkout code
@@ -34,15 +31,9 @@ jobs:
         run: |
           uv sync
 
-      - name: Add virtual environment to PYTHONPATH
+      - name: Add src and virtual environment to PYTHONPATH
         run: |
-          echo "PYTHONPATH=${{ github.workspace }}/src;${{ github.workspace }}/.venv/Lib/site-packages" >> $GITHUB_ENV
-
-      # # Add src/ to PYTHONPATH
-      # - name: Add src to PYTHONPATH
-      #   run: |
-      #     echo "Adding src to PYTHONPATH"
-      #     echo "PYTHONPATH=$GITHUB_WORKSPACE/src" >> $GITHUB_ENV
+          echo "PYTHONPATH=${{ github.workspace }}/src:${{ github.workspace }}/.venv/Lib/site-packages" >> $GITHUB_ENV
 
       # Verify the PYTHONPATH (print it out to logs)
       - name: Verify PYTHONPATH
