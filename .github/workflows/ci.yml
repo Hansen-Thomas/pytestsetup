@@ -27,10 +27,3 @@ jobs:
         # For example, using `pytest`
         # run: uv run pytest test/unit
         run: uv run pytest
-        # run: uv run pytest --junitxml=pytest-report.xml test/unit
-
-      # - name: Save test results
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: test-results
-      #     path: pytest-report.xml
