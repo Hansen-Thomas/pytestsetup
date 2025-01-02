@@ -34,14 +34,9 @@ jobs:
         run: |
           uv sync
 
-      - name: Activate virtual environment
-        shell: cmd
+      - name: Add virtual environment to PYTHONPATH
         run: |
-          .venv\Scripts\activate
-
-      - name: Verify installed packages
-        run: |
-          uv pip list
+          echo "PYTHONPATH=$GITHUB_WORKSPACE/.venv/Lib/site-packages:$PYTHONPATH" >> $GITHUB_ENV
 
       # # Add src/ to PYTHONPATH
       # - name: Add src to PYTHONPATH
