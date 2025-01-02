@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest]  
-        python-version: [3.13,]
+        python-version: [3.13]
 
     steps:
       - name: Checkout code
@@ -35,14 +35,16 @@ jobs:
         run: |
           echo "PYTHONPATH=${{ github.workspace }}/src:${{ github.workspace }}/.venv/Lib/site-packages" >> $GITHUB_ENV
 
-      # Verify the PYTHONPATH (print it out to logs)
-      - name: Verify PYTHONPATH
+      - name: Verify PYTHONPATH and Import Modules
+        env: # Use environment variables explicitly here
+          PYTHONPATH: ${{ github.workspace }}/src:${{ github.workspace }}/.venv/Lib/site-packages
         run: |
           echo "PYTHONPATH is: $PYTHONPATH"
           python -c "import sys; print('PYTHONPATH:', sys.path)"
           python -c "import database; print('Module imported successfully')"
 
-      # Run all tests in test/unit dir, including all tests in its subdirectories
       - name: Run tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}/src:${{ github.workspace }}/.venv/Lib/site-packages
         run: |
           pytest test/unit
