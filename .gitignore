@@ -13,3 +13,6 @@ wheels/
 # Databases
 pytest.db
 stage.db
+
+# Environment-files
+.env
