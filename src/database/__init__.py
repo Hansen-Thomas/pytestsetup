@@ -74,8 +74,21 @@ import database.tables  # ensures that all tables are loaded into the metadata.
 
 # 2) setup the database-URL-objects: ------------------------------------------
 
+_db_host = os.environ.get("DB_HOST", "localhost")
+_db_port = os.environ.get("DB_PORT", 5432)
+_db_name_stage = os.environ.get("DB_NAME_STAGE", "")
+_db_user = os.environ.get("DB_USER", "")
+_db_password = os.environ.get("DB_PASSWORD", "")
+
 URL_OBJECT_PROD = URL.create(drivername="sqlite", database="production.db")
-URL_OBJECT_STAGE = URL.create(drivername="sqlite", database="stage.db")
+URL_OBJECT_STAGE = URL.create(
+    drivername="postgresql+psycopg",
+    host=_db_host,
+    port=int(_db_port),
+    database=_db_name_stage,
+    username=_db_user,
+    password=_db_password,
+)
 URL_OBJECT_UNIT_TESTS_LOCAL_DB = URL.create(drivername="sqlite", database="pytest.db")
 URL_OBJECT_UNIT_TESTS_IN_MEMORY = URL.create(drivername="sqlite", database=":memory:")
 
@@ -88,12 +101,14 @@ CONNECTION_URLS = {
 
 # 3) setup engine and sessionmaker: -------------------------------------------
 
-logger = logging.getLogger(__name__)
 _use_db = os.environ.get("USE_DB", "local_db_unit_tests")
+
 if _use_db not in CONNECTION_URLS:
     raise ValueError(f'Value "{_use_db}" is not allowed for param "USE_DB"!')
 
+logger = logging.getLogger(__name__)
 logger.info(f"using database: {_use_db}")
+
 _url_object = CONNECTION_URLS[_use_db]
 
 if _use_db == "in_memory_db_unit_tests":
@@ -135,7 +150,7 @@ def get_session_factory() -> sessionmaker:
 def _get_engine(url_key: str, echo: bool = False) -> Engine:
     if url_key not in CONNECTION_URLS:
         raise ValueError(f"url_key {url_key} not supported!")
-    
+
     if _use_db == "in_memory_db_unit_tests":
         engine = create_engine(
             "sqlite://",
