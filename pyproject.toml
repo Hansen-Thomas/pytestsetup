@@ -24,6 +24,6 @@ dev = [
 addopts = [
     "--import-mode=importlib",
 ]
-pythonpath = [
+pythonpath = [  # Add the project root to the PYTHONPATH, important for imports in GitHub-actions!
   ".", "src"
 ]
