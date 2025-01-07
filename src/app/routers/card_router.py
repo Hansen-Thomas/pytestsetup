@@ -45,5 +45,3 @@ def update_card(
         )
     except MissingCardException:
         raise HTTPException(status_code=404, detail="Card does not exist!")
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{e=}")
