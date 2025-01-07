@@ -2,16 +2,16 @@ import pytest
 
 from app.api_models.card import PydCardInputModel
 from domain.card_repository import DuplicateCardException, MissingCardException
-from services.unit_of_work import FakeUnitOfWork, DbUnitOfWork
 from domain.card import Card
 from domain.relevance import Relevance
 from domain.word_type import WordType
-from services.card_services import add_new_card, update_existing_card
+from services.card_services import create_card_in_db, delete_card_in_db, update_card_in_db
+from services.unit_of_work import FakeUnitOfWork, DbUnitOfWork
 
 
 def test_new_card_can_be_added(session_factory):
     uow = DbUnitOfWork(session_factory=session_factory)
-    add_new_card(
+    create_card_in_db(
         word_type=WordType.NOUN,
         relevance_description="A - Beginner",
         german="das Haus",
@@ -30,7 +30,7 @@ def test_new_card_can_be_added(session_factory):
 
 def test_duplicate_card_can_not_be_added():
     uow = FakeUnitOfWork()
-    add_new_card(
+    create_card_in_db(
         word_type=WordType.NONE,
         relevance_description="A - Beginner",
         german="das Haus",
@@ -38,7 +38,7 @@ def test_duplicate_card_can_not_be_added():
         uow=uow,
     )
     with pytest.raises(DuplicateCardException):
-        add_new_card(
+        create_card_in_db(
             word_type=WordType.NONE,
             relevance_description="A - Beginner",
             german="das Haus",
@@ -72,7 +72,7 @@ def test_update_existing_card():
         italian="l'albero",
     )
 
-    update_existing_card(
+    update_card_in_db(
         id_card=4711,
         new_word_type=updated_card_input.word_type,
         new_relevance_description=updated_card_input.relevance_description,
@@ -102,7 +102,7 @@ def test_missing_card_can_not_be_updated():
     )
 
     with pytest.raises(MissingCardException):
-        update_existing_card(
+        update_card_in_db(
             id_card=4711,  # does not exist
             new_word_type=updated_card_input.word_type,
             new_relevance_description=updated_card_input.relevance_description,
@@ -113,3 +113,59 @@ def test_missing_card_can_not_be_updated():
     with uow:
         all_cards = uow.cards.all()
         assert not all_cards
+
+
+def test_delete_card():
+    uow = FakeUnitOfWork()
+    card_to_delete = Card(
+        id=4711,
+        word_type=WordType.ADJECTIVE,
+        relevance=Relevance(id=3, description="C - Professional"),
+        german="weit",
+        italian="large",
+    )
+    second_card = Card(
+        id=4712,
+        word_type=WordType.NOUN,
+        relevance=Relevance(id=1, description="A - Beginner"),
+        german="das Boot",
+        italian="la barca",
+    )
+    with uow:
+        uow.cards.add(card_to_delete)
+        uow.cards.add(second_card)
+        uow.commit()
+
+    delete_card_in_db(id_card=4711, uow=uow)
+
+    # inspect result:
+    with uow:
+        cards = uow.cards.all()
+        assert len(cards) == 1
+        result_card = cards[0]
+        assert result_card.id == 4712
+
+
+def test_missing_card_can_not_be_deleted():
+    uow = FakeUnitOfWork()
+    card = Card(
+        id=4711,
+        word_type=WordType.ADJECTIVE,
+        relevance=Relevance(id=3, description="C - Professional"),
+        german="weit",
+        italian="large",
+    )
+
+    with uow:
+        uow.cards.add(card)
+        uow.commit()
+
+    with pytest.raises(MissingCardException):
+        delete_card_in_db(id_card=4712, uow=uow)  # wrong id, does not exist!
+
+    # inspect result:
+    with uow:
+        cards = uow.cards.all()
+        assert len(cards) == 1
+        result_card = cards[0]
+        assert result_card.id == 4711

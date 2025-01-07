@@ -11,11 +11,18 @@ import database.orm as orm
 
 @pytest.fixture(name="client")
 def client_fixture(session_factory: sessionmaker):
-    # ensure we alway use our unit_test_db with this Testclient:
+    # Overwrite the get_session_factory-dependency from our FastAPI-app
+    # to ensure we alway use our unit_test_db with this Testclient. Thus,
+    # since dependencies must be callables, create a local function that
+    # just returns our test-session-factory-fixture:
+
     def get_session_factory_override():
         return session_factory
 
     app.dependency_overrides[get_session_factory] = get_session_factory_override
+    # by that we ensured that we can use the normal app-code for testing
+    # but for sure always use the session_factory from our test-suite (which
+    # points to a testing database).
 
     # return the Testclient:
     client = TestClient(app)

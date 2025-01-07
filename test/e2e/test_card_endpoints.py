@@ -137,3 +137,73 @@ def test_update_card_unhappy_path_returns_404_when_card_not_found(
         json=corrected_data,
     )
     assert response.status_code == 404
+
+
+def test_delete_card_happy_path(client: TestClient, session_factory):
+    data = {
+        "word_type": WordType.VERB.value,
+        "relevance_description": "A - Beginner",
+        "german": "haben",
+        "italian": "avere",
+    }
+
+    # add card:
+    response = client.post(
+        "/cards",
+        headers={},
+        json=data,
+    )
+    assert response.status_code == 200
+
+    uow = DbUnitOfWork(session_factory=session_factory)
+    with uow:
+        all_cards = uow.cards.all()
+        assert all_cards
+
+    # delete card:
+    response = client.delete(
+        "/cards/1",
+        headers={},
+    )
+    assert response.status_code == 200
+
+    # inspect result:
+    with uow:
+        all_cards = uow.cards.all()
+        assert not all_cards
+
+
+def test_delete_card_unhappy_path_returns_404_when_card_not_found(
+    client: TestClient, session_factory
+):
+    data = {
+        "word_type": WordType.VERB.value,
+        "relevance_description": "A - Beginner",
+        "german": "haben",
+        "italian": "avere",
+    }
+
+    # add card:
+    response = client.post(
+        "/cards",
+        headers={},
+        json=data,
+    )
+    assert response.status_code == 200
+
+    uow = DbUnitOfWork(session_factory=session_factory)
+    with uow:
+        all_cards = uow.cards.all()
+        assert all_cards
+
+    # delete card:
+    response = client.delete(
+        "/cards/2",  # does not exist
+        headers={},
+    )
+    assert response.status_code == 404
+
+    # inspect result:
+    with uow:
+        all_cards = uow.cards.all()
+        assert all_cards

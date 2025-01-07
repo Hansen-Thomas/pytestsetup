@@ -4,13 +4,13 @@ from domain.card_repository import (
     DuplicateCardException,
     MissingCardException,
 )
-from services.unit_of_work import AbstractUnitOfWork
 from domain.card import Card
 from domain.relevance import Relevance
 from domain.word_type import WordType
+from services.unit_of_work import AbstractUnitOfWork
 
 
-def add_new_card(
+def create_card_in_db(
     word_type: WordType,
     relevance_description: str,
     german: str,
@@ -35,9 +35,13 @@ def add_new_card(
             uow.commit()
     except IntegrityError:
         raise DuplicateCardException()
+    
+
+def read_card_in_db(id_card, uow: AbstractUnitOfWork) -> Card:
+    pass
 
 
-def update_existing_card(
+def update_card_in_db(
     id_card: int,
     new_word_type: WordType,
     new_relevance_description: str,
@@ -59,4 +63,13 @@ def update_existing_card(
             uow.relevance_levels.add(relevance)
         
         card.relevance = relevance
+        uow.commit()
+
+
+def delete_card_in_db(id_card: int, uow: AbstractUnitOfWork) -> None:
+    with uow:
+        card_to_delete = uow.cards.get(id=id_card)
+        if not card_to_delete:
+            raise MissingCardException()
+        uow.cards.delete(card=card_to_delete)
         uow.commit()

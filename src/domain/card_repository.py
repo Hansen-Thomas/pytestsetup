@@ -33,6 +33,11 @@ class AbstractCardRepository(ABC):
 
     @abstractmethod
     def delete(self, card: Card) -> None:
+        # Lessons learned: Parameter needs to be of type Card and not its id,
+        # because in the end we definitely want to remove an instance
+        # from the SqlAlchemy-Session, so it needs to be a mapped object,
+        # not an integer-id. And we don't want to do the get-by-id-request
+        # in this delete method.
         raise NotImplementedError
 
 
