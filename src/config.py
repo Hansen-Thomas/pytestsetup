@@ -4,9 +4,10 @@ import os
 def get_postgres_uri():
     host = os.environ.get('DB_HOST', 'localhost')
     port = 54321 if host == 'localhost' else 5432
+    db_name_stage = os.environ.get('DB_NAME_STAGE', 'unknown_stage_db')
+    user = os.environ.get('DB_USER', 'unknow_user')
     password = os.environ.get('DB_PASSWORD', 'abc123')
-    user, db_name = 'allocation', 'allocation'
-    return f"postgresql://{user}:{password}@{host}:{port}/{db_name}"
+    return f"postgresql://{user}:{password}@{host}:{port}/{db_name_stage}"
 
 
 def get_api_url():

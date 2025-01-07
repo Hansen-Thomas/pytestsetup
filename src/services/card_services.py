@@ -1,6 +1,9 @@
 from sqlalchemy.exc import IntegrityError
 
-from database.repositories.card_repository import DuplicateCardException
+from database.repositories.card_repository import (
+    DuplicateCardException,
+    MissingCardException,
+)
 from database.unit_of_work import AbstractUnitOfWork
 from domain.card import Card
 from domain.relevance import Relevance
@@ -32,3 +35,28 @@ def add_new_card(
             uow.commit()
     except IntegrityError:
         raise DuplicateCardException()
+
+
+def update_existing_card(
+    id_card: int,
+    new_word_type: WordType,
+    new_relevance_description: str,
+    new_german: str,
+    new_italian: str,
+    uow: AbstractUnitOfWork,
+) -> None:
+    with uow:
+        card = uow.cards.get(id=id_card)
+        if not card:
+            raise MissingCardException()
+        card.word_type = new_word_type
+        card.german = new_german
+        card.italian = new_italian
+
+        relevance = uow.relevance_levels.get_by_description(new_relevance_description)
+        if not relevance:
+            relevance = Relevance(description=new_relevance_description)
+            uow.relevance_levels.add(relevance)
+        
+        card.relevance = relevance
+        uow.commit()

@@ -12,6 +12,12 @@ class DuplicateCardException(Exception):
         super().__init__(self.message)
 
 
+class MissingCardException(Exception):
+    def __init__(self, message="Requested card does not exist"):
+        self.message = message
+        super().__init__(self.message)
+
+
 class AbstractCardRepository(ABC):
     @abstractmethod
     def add(self, card: Card) -> None:
@@ -43,11 +49,10 @@ class FakeCardRepository(AbstractCardRepository):
         return list(self._cards)
 
     def get(self, id: int) -> Card | None:
-        card = Card()
-        card.id = id
-        if card in self._cards:
-            return card
-        return None
+        card = [card for card in self._cards if card.id == id]
+        if not card:
+            return None
+        return card[0]
 
     def delete(self, card: Card) -> None:
         if card in self._cards:
