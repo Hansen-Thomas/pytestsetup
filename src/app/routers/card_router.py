@@ -28,7 +28,7 @@ def add_card(
         raise HTTPException(status_code=400, detail="Card already exists!")
 
 
-@router.patch("/cards/{id_card}")
+@router.put("/cards/{id_card}")
 def update_card(
     id_card: int,
     card_input: card_models.CardInputModel,
