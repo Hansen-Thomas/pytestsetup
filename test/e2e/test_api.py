@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from database.unit_of_work import DbUnitOfWork
+from services.unit_of_work import DbUnitOfWork
 from domain.word_type import WordType
 
 

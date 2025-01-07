@@ -1,10 +1,10 @@
 from sqlalchemy.exc import IntegrityError
 
-from database.repositories.card_repository import (
+from domain.card_repository import (
     DuplicateCardException,
     MissingCardException,
 )
-from database.unit_of_work import AbstractUnitOfWork
+from services.unit_of_work import AbstractUnitOfWork
 from domain.card import Card
 from domain.relevance import Relevance
 from domain.word_type import WordType

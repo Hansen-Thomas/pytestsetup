@@ -3,22 +3,22 @@ from pydantic import BaseModel
 from domain.relevance import Relevance
 
 
-class RelevanceModel(BaseModel):  # (DTO)
+class PydRelevanceModel(BaseModel):
     id: int | None = None
     description: str = ""
 
 
-def convert_to_pydantic(relevance: Relevance | None) -> RelevanceModel:
+def convert_to_pydantic(relevance: Relevance | None) -> PydRelevanceModel:
     if relevance:
-        return RelevanceModel(
+        return PydRelevanceModel(
             id=relevance.id,
             description=relevance.description,
         )
     else:
-        return RelevanceModel()
+        return PydRelevanceModel()
 
 
-def convert_to_domain(pyd_relevance: RelevanceModel | None) -> Relevance:
+def convert_to_domain(pyd_relevance: PydRelevanceModel | None) -> Relevance:
     if pyd_relevance:
         return Relevance(
             id=pyd_relevance.id,

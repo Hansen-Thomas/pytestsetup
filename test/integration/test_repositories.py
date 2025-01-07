@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from database.repositories.card_repository import DbCardRepository
+from domain.card_repository import DbCardRepository
 from domain.card import Card
 from domain.relevance import Relevance
 from domain.word_type import WordType

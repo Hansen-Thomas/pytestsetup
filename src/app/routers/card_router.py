@@ -3,8 +3,8 @@ from sqlalchemy.orm import sessionmaker
 
 import app.api_models.card as card_models
 from app.dependencies import get_session_factory
-from database.repositories.card_repository import DuplicateCardException, MissingCardException
-from database.unit_of_work import DbUnitOfWork
+from domain.card_repository import DuplicateCardException, MissingCardException
+from services.unit_of_work import DbUnitOfWork
 from services.card_services import add_new_card, update_existing_card
 
 
@@ -13,7 +13,7 @@ router = APIRouter()
 
 @router.post("/cards")
 def add_card(
-    card_input: card_models.CardInputModel,
+    card_input: card_models.PydCardInputModel,
     session_factory: sessionmaker = Depends(get_session_factory),
 ):
     try:
@@ -31,7 +31,7 @@ def add_card(
 @router.put("/cards/{id_card}")
 def update_card(
     id_card: int,
-    card_input: card_models.CardInputModel,
+    card_input: card_models.PydCardInputModel,
     session_factory: sessionmaker = Depends(get_session_factory),
 ):
     try:
