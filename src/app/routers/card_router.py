@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 
 import app.api_models.card as card_models
 from app.dependencies import get_session_factory
-from database.repositories.card_repository import DuplicateCardException
+from database.repositories.card_repository import DuplicateCardException, MissingCardException
 from database.unit_of_work import DbUnitOfWork
 from services.card_services import add_new_card, update_existing_card
 
@@ -43,5 +43,7 @@ def update_card(
             new_italian=card_input.italian,
             uow=DbUnitOfWork(session_factory=session_factory),
         )
+    except MissingCardException:
+        raise HTTPException(status_code=404, detail="Card does not exist!")
     except Exception as e:
-        print(f"{e:}")
+        raise HTTPException(status_code=400, detail=f"{e=}")

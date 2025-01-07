@@ -9,14 +9,16 @@ import database
 import database.orm as orm
 
 
-@pytest.fixture(name="client")  
-def client_fixture(session_factory: sessionmaker):  
-    def get_session_factory_override():  
+@pytest.fixture(name="client")
+def client_fixture(session_factory: sessionmaker):
+    # ensure we alway use our unit_test_db with this Testclient:
+    def get_session_factory_override():
         return session_factory
 
-    app.dependency_overrides[get_session_factory] = get_session_factory_override  
+    app.dependency_overrides[get_session_factory] = get_session_factory_override
 
-    client = TestClient(app)  
+    # return the Testclient:
+    client = TestClient(app)
     yield client
 
     app.dependency_overrides.clear()
@@ -26,6 +28,10 @@ def client_fixture(session_factory: sessionmaker):
 def unit_test_engine() -> Engine:
     url_key = "local_db_unit_tests"
     # url_key = "in_memory_db_unit_tests"
+
+    # in_memory_db doesn't work with e2e-tests (FastAPI create multiple threads,
+    # this seems to be part of the problem)
+
     engine = database._get_engine(url_key=url_key, echo=True)
     database.metadata.drop_all(bind=engine)
     database.metadata.create_all(bind=engine)

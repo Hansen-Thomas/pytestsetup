@@ -58,3 +58,82 @@ def test_add_card_unhappy_path_returns_400_and_error_message(client: TestClient)
     assert response.status_code == 400
     content = response.json()
     assert content["detail"] == "Card already exists!"
+
+
+def test_update_card_happy_path(client: TestClient, session_factory):
+    # wrong card data:
+    data = {
+        "word_type": WordType.ADJECTIVE.value,  # wrong, needs to be corrected
+        "relevance_description": "A - Beginner",
+        "german": "haben",
+        "italian": "avere",
+    }
+
+    # add card:
+    response = client.post(
+        "/cards",
+        headers={},
+        json=data,
+    )
+    assert response.status_code == 200
+
+    corrected_data = {
+        "word_type": WordType.VERB.value,  # updated
+        "relevance_description": "A - Beginner",
+        "german": "haben",
+        "italian": "avere",
+    }
+
+    # update card:
+    response = client.put(
+        "/cards/1",
+        headers={},
+        json=corrected_data,
+    )
+    assert response.status_code == 200
+
+    # instpect result:
+    uow = DbUnitOfWork(session_factory=session_factory)
+    with uow:
+        all_cards = uow.cards.all()
+        assert len(all_cards) == 1
+        card = all_cards[0]
+        assert card.word_type == WordType.VERB
+        assert card.german == "haben"
+        assert card.italian == "avere"
+        assert card.relevance.description == "A - Beginner"
+
+
+def test_update_card_unhappy_path_returns_404_when_card_not_found(
+    client: TestClient,
+):
+    # wrong card data:
+    data = {
+        "word_type": WordType.ADJECTIVE.value,  # wrong, needs to be corrected
+        "relevance_description": "A - Beginner",
+        "german": "haben",
+        "italian": "avere",
+    }
+
+    # add card:
+    response = client.post(
+        "/cards",
+        headers={},
+        json=data,
+    )
+    assert response.status_code == 200
+
+    corrected_data = {
+        "word_type": WordType.VERB.value,  # updated
+        "relevance_description": "A - Beginner",
+        "german": "haben",
+        "italian": "avere",
+    }
+
+    # update card:
+    response = client.put(
+        "/cards/2",  # wrong id (should be 1)
+        headers={},
+        json=corrected_data,
+    )
+    assert response.status_code == 404
