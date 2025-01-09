@@ -4,7 +4,7 @@ from domain.card_repository import DbCardRepository
 from domain.card import Card
 from domain.relevance import Relevance
 from domain.word_type import WordType
-import test.integration.integration_utils as plain_sql_utils
+import tests.integration.integration_utils as plain_sql_utils
 
 
 def test_db_card_repo_can_load_card_with_tags(session: Session):

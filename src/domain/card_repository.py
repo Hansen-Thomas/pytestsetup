@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from domain.card import Card
 
@@ -73,6 +73,7 @@ class DbCardRepository(AbstractCardRepository):
 
     def all(self) -> list[Card]:
         stmt = select(Card)
+        # stmt = select(Card).options(joinedload(Card.relevance))
         return list(self.session.scalars(stmt).all())
 
     def get(self, id: int) -> Card | None:

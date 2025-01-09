@@ -5,7 +5,7 @@ from domain.card import Card
 from domain.relevance import Relevance
 from domain.tag import Tag
 from domain.word_type import WordType
-import test.integration.integration_utils as plain_sql_utils
+import tests.integration.integration_utils as plain_sql_utils
 
 
 def test_session_can_load_cards(session: Session):

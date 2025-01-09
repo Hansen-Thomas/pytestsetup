@@ -21,6 +21,7 @@ from domain.tag_repository import (
 
 
 class AbstractUnitOfWork(ABC):
+    session: Session
     cards: AbstractCardRepository
     relevance_levels: AbstractRelevanceRepository
     tags: AbstractTagRepository
@@ -55,12 +56,18 @@ class FakeUnitOfWork(AbstractUnitOfWork):
 
 
 class DbUnitOfWork(AbstractUnitOfWork):
-    def __init__(self, session_factory: sessionmaker):
+    def __init__(
+        self,
+        session_factory: sessionmaker,
+        session_shall_expire_on_commit: bool = True,
+    ):
         """The session_factory decides which database to use."""
         self.session_factory = session_factory
+        self.session_shall_expire_on_commit = session_shall_expire_on_commit
 
     def __enter__(self):
-        self.session: Session = self.session_factory()
+        self.session = self.session_factory()
+        self.session.expire_on_commit = self.session_shall_expire_on_commit
 
         self.cards = DbCardRepository(self.session)
         self.relevance_levels = DbRelevanceRepository(self.session)

@@ -60,6 +60,44 @@ def test_add_card_unhappy_path_returns_400_and_error_message(client: TestClient)
     assert content["detail"] == "Card already exists!"
 
 
+def test_get_all_cards_happy_path(client: TestClient, session_factory):
+    # arrange:
+    data_1 = {
+        "word_type": WordType.VERB.value,
+        "relevance_description": "A - Beginner",
+        "german": "haben",
+        "italian": "avere",
+    }
+    response = client.post(
+        "/cards",
+        headers={},
+        json=data_1,
+    )
+    assert response.status_code == 200
+
+    data_2 = {
+        "word_type": WordType.ADJECTIVE.value,
+        "relevance_description": "A - Beginner",
+        "german": "alt",
+        "italian": "vecchio",
+    }
+    response = client.post(
+        "/cards",
+        headers={},
+        json=data_2,
+    )
+    assert response.status_code == 200
+
+    # act:
+    response = client.get("/cards")
+
+    # assert:
+    assert response.status_code == 200
+    data = response.json()
+    assert data
+
+
+
 def test_update_card_happy_path(client: TestClient, session_factory):
     # wrong card data:
     data = {

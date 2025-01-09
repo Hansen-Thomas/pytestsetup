@@ -1,6 +1,6 @@
 import pytest
 
-from app.api_models.card import PydCardInputModel
+from app.schemas.card import PydCardInputModel
 from domain.card_repository import DuplicateCardException, MissingCardException
 from domain.card import Card
 from domain.relevance import Relevance

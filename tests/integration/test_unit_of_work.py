@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from services.unit_of_work import DbUnitOfWork
 from domain.card import Card
 from domain.tag import Tag
-import test.integration.integration_utils as plain_sql_utils
+import tests.integration.integration_utils as plain_sql_utils
 
 
 def test_uow_can_get_card_and_add_tags_to_it(session_factory):

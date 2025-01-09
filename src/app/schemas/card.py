@@ -1,11 +1,18 @@
 from pydantic import BaseModel
 
 from domain.card import Card
-import app.api_models.relevance as relevance_models
+import app.schemas.relevance as relevance_models
 from domain.word_type import WordType
 
 
 class PydCardInputModel(BaseModel):
+    word_type: WordType
+    relevance_description: str
+    german: str
+    italian: str
+
+
+class PydCardResponse(BaseModel):
     word_type: WordType
     relevance_description: str
     german: str
