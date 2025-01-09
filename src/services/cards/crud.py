@@ -24,7 +24,9 @@ def create_card_in_db(
             )
             if not relevance:
                 relevance = Relevance(description=relevance_description)
-                uow.relevance_levels.add(relevance)
+                uow.relevance_levels.add(
+                    relevance
+                )  # TODO: Wirklich nötig? Oder könnte diese Zeile auch weggelassen werden? Testen!
             new_card = Card(
                 word_type=word_type,
                 relevance=relevance,
@@ -35,26 +37,26 @@ def create_card_in_db(
             uow.commit()
     except IntegrityError:
         raise DuplicateCardException()
-    
+
 
 def read_card_in_db(id_card, uow: AbstractUnitOfWork) -> Card:
     with uow:
         card = uow.cards.get(id=id_card)
         if not card:
             raise MissingCardException()
-        else:
-            return card
+        uow.session.expunge(card)
+    return card
 
 
 def read_all_cards_in_db(uow: AbstractUnitOfWork) -> list[Card]:
     """
     Use case: Returns detached objects to use them for templates or as a JSON-
     response.
-    
-    This means that we need to ensure that the ORM-objects don't have expired 
+
+    This means that we need to ensure that the ORM-objects don't have expired
     attributes because this would lead to a reload once those are accessed. Since
     attributes always get expired if the session is closed or a rollback takes
-    place (or a commit if the session flag "expire_on_commit is set to true - 
+    place (or a commit if the session flag "expire_on_commit is set to true -
     which is its default value), we need to expunge them before the session is
     rollbacked or closed.
 
@@ -68,10 +70,10 @@ def read_all_cards_in_db(uow: AbstractUnitOfWork) -> list[Card]:
         - detached: The instance is not connected to the session anymore, this
                     is kind of our target.
         - expired: The attributes of an instance become expired in the following
-                   situations: 
+                   situations:
                    a) the session is commited.
                    b) the session is rolled back
-                   c) the session is closed: then the instance automatically 
+                   c) the session is closed: then the instance automatically
                       gets detached, too.
                    If an attribute is expired, it will definitely need to ask
                    the session for its current database-data in the moment this
@@ -91,7 +93,7 @@ def read_all_cards_in_db(uow: AbstractUnitOfWork) -> list[Card]:
       error. So why is that: Because after closing the session, all attributes
       get expired, and in the moment an attribute is expired, accessing it means
       by a 100% that it will definitely need a session to get its current data
-      from the database via a session. No chance of getting around that. But 
+      from the database via a session. No chance of getting around that. But
       closing a session means the objects have no session anymore to do so (they
       are now in 'detached'-state), so -> Error.
     - In our situation here, aside from closing the session the unit-of-work-
@@ -126,7 +128,7 @@ def read_all_cards_in_db(uow: AbstractUnitOfWork) -> list[Card]:
       database, getting ORM-objects but closing the session while still being
       able to use these instances and access their attributes without causing a
       reload-query against the database without having any session anymore.
-      So the 'expunge()'-method is our shining star, we need it, it is 
+      So the 'expunge()'-method is our shining star, we need it, it is
       something every developer needs to know in this specific context. It is
       nothing we can avoid when learning sqlalchemy!
 
@@ -135,10 +137,10 @@ def read_all_cards_in_db(uow: AbstractUnitOfWork) -> list[Card]:
         cards = uow.cards.all()
         uow.session.expunge_all()  # needs to be called!
 
-        # (otherwise the rollback and or closing the session would lead to 
+        # (otherwise the rollback and or closing the session would lead to
         # expired attributes, which would try to re-query the database after the
         # session is closed, which again leads to an exception.
-    
+
     # if cards:  # code to test attribute-access:
     #     first_card = cards[0]
     #     print(first_card.relevance)
@@ -166,7 +168,7 @@ def update_card_in_db(
         if not relevance:
             relevance = Relevance(description=new_relevance_description)
             uow.relevance_levels.add(relevance)
-        
+
         card.relevance = relevance
         uow.commit()
 

@@ -5,7 +5,7 @@ from domain.card_repository import DuplicateCardException, MissingCardException
 from domain.card import Card
 from domain.relevance import Relevance
 from domain.word_type import WordType
-from services.card_crud_services import create_card_in_db, delete_card_in_db, update_card_in_db
+from services.cards.crud import create_card_in_db, delete_card_in_db, update_card_in_db
 from services.unit_of_work import FakeUnitOfWork, DbUnitOfWork
 
 

@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 import app.schemas.card as card_schemas
 from app.dependencies import get_session_factory
 from domain.card_repository import DuplicateCardException, MissingCardException
-from services.card_crud_services import (
+from services.cards.crud import (
     create_card_in_db,
     delete_card_in_db,
     read_all_cards_in_db,
@@ -53,10 +53,12 @@ def get_card(
     session_factory: sessionmaker = Depends(get_session_factory),
 ):
     try:
-        read_card_in_db(
+        domain_card = read_card_in_db(
             id_card=id_card,
             uow=DbUnitOfWork(session_factory=session_factory),
         )
+        pyd_card = card_schemas.convert_to_pydantic(domain_card)
+        return {"card": pyd_card}
     except MissingCardException:
         raise HTTPException(status_code=404, detail="Card does not exist!")
     # TODO: Response genauer definieren
