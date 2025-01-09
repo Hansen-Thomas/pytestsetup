@@ -89,7 +89,7 @@ URL_OBJECT_STAGE = URL.create(
     username=_db_user,
     password=_db_password,
 )
-URL_OBJECT_UNIT_TESTS_LOCAL_DB = URL.create(drivername="sqlite", database="pytest.db")
+URL_OBJECT_UNIT_TESTS_LOCAL_DB = URL.create(drivername="sqlite", database="tests/pytest.db")
 URL_OBJECT_UNIT_TESTS_IN_MEMORY = URL.create(drivername="sqlite", database=":memory:")
 
 CONNECTION_URLS = {
