@@ -18,7 +18,6 @@ def test_new_card_can_be_added(session_factory):
         italian="la casa",
         uow=uow,
     )
-    assert False
     with uow:
         all_cards = uow.cards.all()
         assert len(all_cards) == 1
