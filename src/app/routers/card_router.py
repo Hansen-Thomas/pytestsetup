@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import JSONResponse
 from sqlalchemy.orm import sessionmaker
 
-import app.schemas.card as card_models
+import app.schemas.card as card_schemas
 from app.dependencies import get_session_factory
 from domain.card_repository import DuplicateCardException, MissingCardException
-from services.card_services import (
+from services.card_crud_services import (
     create_card_in_db,
     delete_card_in_db,
     read_all_cards_in_db,
@@ -20,7 +19,7 @@ router = APIRouter()
 
 @router.post("/cards")
 def add_card(
-    card_input: card_models.PydCardInputModel,
+    card_input: card_schemas.PydCardInput,
     session_factory: sessionmaker = Depends(get_session_factory),
 ):
     try:
@@ -38,16 +37,14 @@ def add_card(
 
 @router.get("/cards")
 def get_all_cards(session_factory: sessionmaker = Depends(get_session_factory)):
-    uow = DbUnitOfWork(
-        session_factory=session_factory,
-        session_shall_expire_on_commit=False,
-    )
-    domain_cards = read_all_cards_in_db(uow=uow)
+    uow = DbUnitOfWork(session_factory=session_factory)
     try:
-        cards = [card_models.convert_to_pydantic(card) for card in domain_cards]
+        domain_cards = read_all_cards_in_db(uow=uow)
+        pyd_cards = list(map(card_schemas.convert_to_pydantic, domain_cards))
     except Exception as e:
         print(f"{e=}")
-    return {"result": cards}
+    return {"result": pyd_cards}
+    # TODO: Exception-handling und response genauer definieren
 
 
 @router.get("/cards/{id_card}")
@@ -68,7 +65,7 @@ def get_card(
 @router.put("/cards/{id_card}")
 def update_card(
     id_card: int,
-    card_input: card_models.PydCardInputModel,
+    card_input: card_schemas.PydCardInput,
     session_factory: sessionmaker = Depends(get_session_factory),
 ):
     try:

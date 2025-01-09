@@ -1,11 +1,11 @@
 import pytest
 
-from app.schemas.card import PydCardInputModel
+from app.schemas.card import PydCardInput
 from domain.card_repository import DuplicateCardException, MissingCardException
 from domain.card import Card
 from domain.relevance import Relevance
 from domain.word_type import WordType
-from services.card_services import create_card_in_db, delete_card_in_db, update_card_in_db
+from services.card_crud_services import create_card_in_db, delete_card_in_db, update_card_in_db
 from services.unit_of_work import FakeUnitOfWork, DbUnitOfWork
 
 
@@ -65,7 +65,7 @@ def test_update_existing_card():
     )
     uow.cards.add(existing_card)
 
-    updated_card_input = PydCardInputModel(
+    updated_card_input = PydCardInput(
         word_type=WordType.NOUN,
         relevance_description="A - Beginner",
         german="der Baum",
@@ -94,7 +94,7 @@ def test_missing_card_can_not_be_updated():
     uow = FakeUnitOfWork()
     # uow.cards stays empty
 
-    updated_card_input = PydCardInputModel(
+    updated_card_input = PydCardInput(
         word_type=WordType.NOUN,
         relevance_description="A - Beginner",
         german="der Baum",

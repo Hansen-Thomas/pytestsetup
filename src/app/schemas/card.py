@@ -1,11 +1,11 @@
 from pydantic import BaseModel
 
 from domain.card import Card
-import app.schemas.relevance as relevance_models
+import app.schemas.relevance as relevance_schemas
 from domain.word_type import WordType
 
 
-class PydCardInputModel(BaseModel):
+class PydCardInput(BaseModel):
     word_type: WordType
     relevance_description: str
     german: str
@@ -19,17 +19,17 @@ class PydCardResponse(BaseModel):
     italian: str
 
 
-class PydCardModel(BaseModel):
+class PydCard(BaseModel):
     id: int | None
     word_type: WordType
-    relevance: relevance_models.PydRelevanceModel | None
+    relevance: relevance_schemas.PydRelevance | None
     german: str
     italian: str
 
 
-def convert_to_pydantic(card: Card) -> PydCardModel:
-    pyd_relevance = relevance_models.convert_to_pydantic(card.relevance)
-    return PydCardModel(
+def convert_to_pydantic(card: Card) -> PydCard:
+    pyd_relevance = relevance_schemas.convert_to_pydantic(card.relevance)
+    return PydCard(
         id=card.id,
         word_type=card.word_type,
         relevance=pyd_relevance,
@@ -38,8 +38,8 @@ def convert_to_pydantic(card: Card) -> PydCardModel:
     )
 
 
-def convert_to_domain(pyd_card: PydCardModel) -> Card:
-    relevance = relevance_models.convert_to_domain(pyd_card.relevance)
+def convert_to_domain(pyd_card: PydCard) -> Card:
+    relevance = relevance_schemas.convert_to_domain(pyd_card.relevance)
     return Card(
         id=pyd_card.id,
         word_type=pyd_card.word_type,
