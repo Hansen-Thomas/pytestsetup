@@ -19,6 +19,7 @@ def create_card_in_db(
 ) -> None:
     try:
         with uow:
+            # Business validation:
             relevance = uow.relevance_levels.get_by_description(
                 description=relevance_description
             )
@@ -27,6 +28,7 @@ def create_card_in_db(
                 uow.relevance_levels.add(
                     relevance
                 )  # TODO: Wirklich nötig? Oder könnte diese Zeile auch weggelassen werden? Testen!
+            # Processing:
             new_card = Card(
                 word_type=word_type,
                 relevance=relevance,

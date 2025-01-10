@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import sessionmaker
 
-import app.schemas.card as card_schemas
 from app.dependencies import get_session_factory
+import app.schemas.card as card_schemas
 from domain.card_repository import DuplicateCardException, MissingCardException
 from services.cards.crud import (
     create_card_in_db,

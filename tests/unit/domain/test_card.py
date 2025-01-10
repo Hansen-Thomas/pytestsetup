@@ -4,19 +4,23 @@ from domain.word_type import WordType
 
 
 def test_card_can_solve_guesses():
-    card = Card()
-    card.word_type = WordType.NOUN
-    card.german = "die Antwort"
-    card.italian = "la risposta"
+    card = Card(
+        word_type=WordType.NOUN,
+        relevance=Relevance(description="A - Beginner"),
+        german="die Antwort",
+        italian="la risposta",
+    )
     assert card.solve(solve_italian=True, guess="la risposta") is True
     assert card.solve(solve_italian=True, guess="la domanda") is False
 
 
 def test_card_can_calculate_statistics_after_solving():
-    card = Card()
-    card.word_type = WordType.NOUN
-    card.german = "die Antwort"
-    card.italian = "la risposta"
+    card = Card(
+        word_type=WordType.NOUN,
+        relevance=Relevance(description="A - Beginner"),
+        german="die Antwort",
+        italian="la risposta",
+    )
     assert card.times_played == 0
     assert card.correct_answers == 0
     assert card.last_answer_correct is False
@@ -45,7 +49,12 @@ def test_card_can_calculate_statistics_after_solving():
 
 
 def test_card_can_add_and_remove_tags():
-    card = Card()
+    card = Card(
+        word_type=WordType.NOUN,
+        relevance=Relevance(description="A - Beginner"),
+        german="die Antwort",
+        italian="la risposta",
+    )
     card.add_tag("tag1")
     card.add_tag("tag2")
     assert card.has_tag("tag1")

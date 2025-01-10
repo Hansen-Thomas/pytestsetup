@@ -8,12 +8,12 @@ from domain.word_type import WordType
 class Card:
     def __init__(
         self,
+        word_type: WordType,
+        relevance: Relevance,
+        german: str,
+        italian: str,
         id: int | None = None,
-        word_type: WordType = WordType.NONE,
         id_relevance: int | None = None,
-        relevance: Relevance | None = None,
-        german: str = "",
-        italian: str = "",
     ):
         self.id = id
         self.word_type = word_type  # example for enum-type-member
