@@ -1,6 +1,6 @@
 from sqlalchemy import Table, Column, Integer, ForeignKey
 
-from database import metadata
+from db import metadata
 
 card_has_tag_table = Table(
     "Card_has_Tag",

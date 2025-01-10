@@ -1,6 +1,6 @@
 from sqlalchemy import Table, Column, Integer, String
 
-from database import metadata
+from db import metadata
 
 relevance_table = Table(
     "Relevance",

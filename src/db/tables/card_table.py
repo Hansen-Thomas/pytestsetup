@@ -8,7 +8,7 @@ from sqlalchemy import (
     UniqueConstraint,
 )
 
-from database import metadata
+from db import metadata
 from domain.word_type import WordType
 
 card_table = Table(

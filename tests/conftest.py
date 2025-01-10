@@ -5,8 +5,8 @@ from sqlalchemy.orm import sessionmaker, clear_mappers
 
 from app.main import app
 from app.dependencies import get_session_factory
-import database
-import database.orm as orm
+import db
+import db.orm as orm
 
 
 @pytest.fixture(name="client")
@@ -39,9 +39,9 @@ def unit_test_engine() -> Engine:
     # in_memory_db doesn't work with e2e-tests (FastAPI create multiple threads,
     # this seems to be part of the problem)
 
-    engine = database._get_engine(url_key=url_key, echo=True)
-    database.metadata.drop_all(bind=engine)
-    database.metadata.create_all(bind=engine)
+    engine = db._get_engine(url_key=url_key, echo=True)
+    db.metadata.drop_all(bind=engine)
+    db.metadata.create_all(bind=engine)
     return engine
 
 
