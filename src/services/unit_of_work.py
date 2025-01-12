@@ -40,6 +40,18 @@ class AbstractUnitOfWork(ABC):
     def rollback(self) -> None:
         raise NotImplementedError
 
+    @abstractmethod
+    def refresh(self, instance) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def expunge(self, instance) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def expunge_all(self) -> None:
+        raise NotImplementedError
+
 
 class FakeUnitOfWork(AbstractUnitOfWork):
     def __init__(self):
@@ -52,6 +64,15 @@ class FakeUnitOfWork(AbstractUnitOfWork):
         self.committed = True
 
     def rollback(self) -> None:
+        pass
+
+    def refresh(self, instance) -> None:
+        pass
+
+    def expunge(self, instance) -> None:
+        pass
+
+    def expunge_all(self) -> None:
         pass
 
 
@@ -84,3 +105,12 @@ class DbUnitOfWork(AbstractUnitOfWork):
 
     def rollback(self) -> None:
         self.session.rollback()
+
+    def refresh(self, instance) -> None:
+        self.session.refresh(instance)
+
+    def expunge(self, instance) -> None:
+        self.session.expunge(instance)
+
+    def expunge_all(self) -> None:
+        self.session.expunge_all()

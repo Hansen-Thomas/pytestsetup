@@ -1,7 +1,7 @@
 import pytest
 
 from app.schemas.card import PydCardInput
-from domain.card_repository import DuplicateCardException, MissingCardException
+from domain.card_repository import DuplicateCardException
 from domain.card import Card
 from domain.relevance import Relevance
 from domain.word_type import WordType
@@ -74,10 +74,10 @@ def test_update_existing_card():
 
     update_card_in_db(
         id_card=4711,
-        new_word_type=updated_card_input.word_type,
-        new_relevance_description=updated_card_input.relevance_description,
-        new_german=updated_card_input.german,
-        new_italian=updated_card_input.italian,
+        word_type=updated_card_input.word_type,
+        relevance_description=updated_card_input.relevance_description,
+        german=updated_card_input.german,
+        italian=updated_card_input.italian,
         uow=uow,
     )
 
@@ -101,13 +101,13 @@ def test_missing_card_can_not_be_updated():
         italian="l'albero",
     )
 
-    with pytest.raises(MissingCardException):
+    with pytest.raises(ValueError):
         update_card_in_db(
             id_card=4711,  # does not exist
-            new_word_type=updated_card_input.word_type,
-            new_relevance_description=updated_card_input.relevance_description,
-            new_german=updated_card_input.german,
-            new_italian=updated_card_input.italian,
+            word_type=updated_card_input.word_type,
+            relevance_description=updated_card_input.relevance_description,
+            german=updated_card_input.german,
+            italian=updated_card_input.italian,
             uow=uow,
         )
     with uow:
@@ -160,7 +160,7 @@ def test_missing_card_can_not_be_deleted():
         uow.cards.add(card)
         uow.commit()
 
-    with pytest.raises(MissingCardException):
+    with pytest.raises(ValueError):
         delete_card_in_db(id_card=4712, uow=uow)  # wrong id, does not exist!
 
     # inspect result:

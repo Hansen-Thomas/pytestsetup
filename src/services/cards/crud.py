@@ -1,9 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 
-from domain.card_repository import (
-    DuplicateCardException,
-    MissingCardException,
-)
+from domain.card_repository import DuplicateCardException
 from domain.card import Card
 from domain.relevance import Relevance
 from domain.word_type import WordType
@@ -16,7 +13,7 @@ def create_card_in_db(
     german: str,
     italian: str,
     uow: AbstractUnitOfWork,
-) -> None:
+) -> Card:
     try:
         with uow:
             # Business validation:
@@ -37,6 +34,9 @@ def create_card_in_db(
             )
             uow.cards.add(new_card)
             uow.commit()
+            uow.refresh(new_card)
+            uow.expunge(new_card)
+        return new_card
     except IntegrityError:
         raise DuplicateCardException()
 
@@ -45,8 +45,8 @@ def read_card_in_db(id_card, uow: AbstractUnitOfWork) -> Card:
     with uow:
         card = uow.cards.get(id=id_card)
         if not card:
-            raise MissingCardException()
-        uow.session.expunge(card)
+            raise ValueError("Card not found")
+        uow.expunge(card)
     return card
 
 
@@ -137,7 +137,7 @@ def read_all_cards_in_db(uow: AbstractUnitOfWork) -> list[Card]:
     """
     with uow:
         cards = uow.cards.all()
-        uow.session.expunge_all()  # needs to be called!
+        uow.expunge_all()  # needs to be called!
 
         # (otherwise the rollback and or closing the session would lead to
         # expired attributes, which would try to re-query the database after the
@@ -152,33 +152,37 @@ def read_all_cards_in_db(uow: AbstractUnitOfWork) -> list[Card]:
 
 def update_card_in_db(
     id_card: int,
-    new_word_type: WordType,
-    new_relevance_description: str,
-    new_german: str,
-    new_italian: str,
+    word_type: WordType,
+    relevance_description: str,
+    german: str,
+    italian: str,
     uow: AbstractUnitOfWork,
-) -> None:
+) -> Card:
     with uow:
         card = uow.cards.get(id=id_card)
         if not card:
-            raise MissingCardException()
-        card.word_type = new_word_type
-        card.german = new_german
-        card.italian = new_italian
+            raise ValueError("Card not found")
 
-        relevance = uow.relevance_levels.get_by_description(new_relevance_description)
+        card.word_type = word_type
+        card.german = german
+        card.italian = italian
+
+        relevance = uow.relevance_levels.get_by_description(relevance_description)
         if not relevance:
-            relevance = Relevance(description=new_relevance_description)
+            relevance = Relevance(description=relevance_description)
             uow.relevance_levels.add(relevance)
-
         card.relevance = relevance
+
         uow.commit()
+        uow.refresh(card)
+        uow.expunge(card)
+    return card
 
 
 def delete_card_in_db(id_card: int, uow: AbstractUnitOfWork) -> None:
     with uow:
         card_to_delete = uow.cards.get(id=id_card)
         if not card_to_delete:
-            raise MissingCardException()
+            raise ValueError("Card not found")
         uow.cards.delete(card=card_to_delete)
         uow.commit()

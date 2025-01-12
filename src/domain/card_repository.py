@@ -12,12 +12,6 @@ class DuplicateCardException(Exception):
         super().__init__(self.message)
 
 
-class MissingCardException(Exception):
-    def __init__(self, message="Requested card does not exist"):
-        self.message = message
-        super().__init__(self.message)
-
-
 class AbstractCardRepository(ABC):
     @abstractmethod
     def add(self, card: Card) -> None:

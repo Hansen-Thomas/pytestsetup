@@ -4,3 +4,9 @@ class FakeSession:
 
     def commit(self) -> None:
         self.committed = True
+
+    def refresh(self, instance) -> None:
+        pass
+
+    def expunge(self, instance) -> None:
+        pass

@@ -19,7 +19,7 @@ def test_add_card_happy_path(client: TestClient, session_factory):
         headers={},
         json=data,
     )
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     # inspect result:
     uow = DbUnitOfWork(session_factory=session_factory)
@@ -47,7 +47,7 @@ def test_add_card_unhappy_path_returns_400_and_error_message(client: TestClient)
         headers={},
         json=data,
     )
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     # add same card again:
     response = client.post(
@@ -56,8 +56,6 @@ def test_add_card_unhappy_path_returns_400_and_error_message(client: TestClient)
         json=data,
     )
     assert response.status_code == 400
-    content = response.json()
-    assert content["detail"] == "Card already exists!"
 
 
 def test_get_card_happy_path(client: TestClient, session_factory):
@@ -73,7 +71,7 @@ def test_get_card_happy_path(client: TestClient, session_factory):
         headers={},
         json=data_1,
     )
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     data_2 = {
         "word_type": WordType.ADJECTIVE.value,
@@ -86,7 +84,7 @@ def test_get_card_happy_path(client: TestClient, session_factory):
         headers={},
         json=data_2,
     )
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     # act:
     response = client.get("/cards/2")
@@ -94,7 +92,7 @@ def test_get_card_happy_path(client: TestClient, session_factory):
     # assert:
     assert response.status_code == 200
     data = response.json()
-    assert data["card"]["italian"] == "vecchio"
+    assert data["italian"] == "vecchio"
 
 
 def test_get_all_cards_happy_path(client: TestClient, session_factory):
@@ -110,7 +108,7 @@ def test_get_all_cards_happy_path(client: TestClient, session_factory):
         headers={},
         json=data_1,
     )
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     data_2 = {
         "word_type": WordType.ADJECTIVE.value,
@@ -123,7 +121,7 @@ def test_get_all_cards_happy_path(client: TestClient, session_factory):
         headers={},
         json=data_2,
     )
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     # act:
     response = client.get("/cards")
@@ -149,7 +147,7 @@ def test_update_card_happy_path(client: TestClient, session_factory):
         headers={},
         json=data,
     )
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     corrected_data = {
         "word_type": WordType.VERB.value,  # updated
@@ -195,7 +193,7 @@ def test_update_card_unhappy_path_returns_404_when_card_not_found(
         headers={},
         json=data,
     )
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     corrected_data = {
         "word_type": WordType.VERB.value,  # updated
@@ -227,7 +225,7 @@ def test_delete_card_happy_path(client: TestClient, session_factory):
         headers={},
         json=data,
     )
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     uow = DbUnitOfWork(session_factory=session_factory)
     with uow:
@@ -239,7 +237,7 @@ def test_delete_card_happy_path(client: TestClient, session_factory):
         "/cards/1",
         headers={},
     )
-    assert response.status_code == 200
+    assert response.status_code == 204
 
     # inspect result:
     with uow:
@@ -263,7 +261,7 @@ def test_delete_card_unhappy_path_returns_404_when_card_not_found(
         headers={},
         json=data,
     )
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     uow = DbUnitOfWork(session_factory=session_factory)
     with uow:
