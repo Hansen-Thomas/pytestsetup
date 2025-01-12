@@ -25,7 +25,7 @@ def start_mappers():
             "relevance": relationship(
                 Relevance,
                 lazy="immediate",
-                cascade="all",
+                cascade="save-update, expunge",
             ),
         },
     )
