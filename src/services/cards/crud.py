@@ -22,9 +22,7 @@ def create_card_in_db(
             )
             if not relevance:
                 relevance = Relevance(description=relevance_description)
-                uow.relevance_levels.add(
-                    relevance
-                )  # TODO: Wirklich nötig? Oder könnte diese Zeile auch weggelassen werden? Testen!
+
             # Processing:
             new_card = Card(
                 word_type=word_type,
@@ -170,7 +168,6 @@ def update_card_in_db(
         relevance = uow.relevance_levels.get_by_description(relevance_description)
         if not relevance:
             relevance = Relevance(description=relevance_description)
-            uow.relevance_levels.add(relevance)
         card.relevance = relevance
 
         uow.commit()
