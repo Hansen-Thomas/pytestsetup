@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
-from domain.card import Card
 import app.schemas.relevance as relevance_schemas
+from domain.card import Card
 from domain.word_type import WordType
 
 
@@ -14,7 +14,7 @@ class PydCardInput(BaseModel):
 
 class PydCardResponse(BaseModel):
     word_type: WordType
-    relevance_description: str
+    relevance: relevance_schemas.PydRelevance
     german: str
     italian: str
 
@@ -22,7 +22,7 @@ class PydCardResponse(BaseModel):
 class PydCard(BaseModel):
     id: int | None
     word_type: WordType
-    relevance: relevance_schemas.PydRelevance | None
+    relevance: relevance_schemas.PydRelevance
     german: str
     italian: str
 

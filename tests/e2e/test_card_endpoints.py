@@ -89,6 +89,35 @@ def test_get_card_happy_path(client: TestClient, session_factory):
     assert data["italian"] == "vecchio"
 
 
+def test_get_card_unhappy_path_throws_404(client: TestClient, session_factory):
+    # arrange:
+    with session_factory() as session:
+        relevance = Relevance(description="A - Beginner")
+        card_1 = Card(
+            word_type=WordType.VERB,
+            relevance=relevance,
+            german="haben",
+            italian="avere",
+        )
+        card_2 = Card(
+            word_type=WordType.ADJECTIVE,
+            relevance=relevance,
+            german="alt",
+            italian="vecchio",
+        )
+        session.add(card_1)
+        session.add(card_2)
+        session.commit()
+
+    # act:
+    response = client.get("/cards/3")  # id=3 does not exist!
+
+    # assert:
+    assert response.status_code == 404
+    # data = response.json()
+    # assert data["italian"] == "vecchio"
+
+
 def test_get_all_cards_happy_path(client: TestClient, session_factory):
     # arrange:
     with session_factory() as session:

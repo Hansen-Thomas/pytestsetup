@@ -101,15 +101,14 @@ def test_missing_card_can_not_be_updated():
         italian="l'albero",
     )
 
-    with pytest.raises(ValueError):
-        update_card_in_db(
-            id_card=4711,  # does not exist
-            word_type=updated_card_input.word_type,
-            relevance_description=updated_card_input.relevance_description,
-            german=updated_card_input.german,
-            italian=updated_card_input.italian,
-            uow=uow,
-        )
+    update_card_in_db(
+        id_card=4711,  # does not exist
+        word_type=updated_card_input.word_type,
+        relevance_description=updated_card_input.relevance_description,
+        german=updated_card_input.german,
+        italian=updated_card_input.italian,
+        uow=uow,
+    )
     with uow:
         all_cards = uow.cards.all()
         assert not all_cards
@@ -160,7 +159,7 @@ def test_missing_card_can_not_be_deleted():
         uow.cards.add(card)
         uow.commit()
 
-    with pytest.raises(ValueError):
+    with pytest.raises(KeyError):
         delete_card_in_db(id_card=4712, uow=uow)  # wrong id, does not exist!
 
     # inspect result:

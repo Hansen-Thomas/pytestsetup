@@ -1,3 +1,4 @@
+from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import sessionmaker
 
@@ -43,38 +44,45 @@ def get_all_cards(
     return pyd_cards
 
 
-@router.get("/cards/{id_card}")
+@router.get("/cards/{id_card}", response_model=schemas.PydCardResponse)
 def get_card(
     id_card: int,
     session_factory: sessionmaker = Depends(get_session_factory),
-) -> schemas.PydCard:
-    try:
-        domain_card = crud.read_card_in_db(
-            id_card=id_card,
-            uow=uow.DbUnitOfWork(session_factory=session_factory),
-        )
+) -> Any:
+    domain_card = crud.read_card_in_db(
+        id_card=id_card,
+        uow=uow.DbUnitOfWork(session_factory=session_factory),
+    )
+    if domain_card:
         return schemas.convert_to_pydantic(domain_card)
-    except ValueError:
+    else:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Card not found.",
         )
 
+    # item = session.get(Item, id)
+    # if not item:
+    #     raise HTTPException(status_code=404, detail="Item not found")
+    # if not current_user.is_superuser and (item.owner_id != current_user.id):
+    #     raise HTTPException(status_code=400, detail="Not enough permissions")
+    # return item
 
-@router.put("/cards/{id_card}")
+
+@router.put("/cards/{id_card}", response_model=schemas.PydCardResponse)
 def update_card(
     id_card: int,
     card_input: schemas.PydCardInput,
     session_factory: sessionmaker = Depends(get_session_factory),
-) -> schemas.PydCard:
-    try:
-        domain_card = crud.update_card_in_db(
-            id_card=id_card,
-            **card_input.model_dump(),
-            uow=uow.DbUnitOfWork(session_factory=session_factory),
-        )
+) -> Any:
+    domain_card = crud.update_card_in_db(
+        id_card=id_card,
+        **card_input.model_dump(),
+        uow=uow.DbUnitOfWork(session_factory=session_factory),
+    )
+    if domain_card:
         return schemas.convert_to_pydantic(domain_card)
-    except ValueError:
+    else:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Card not found.",
@@ -91,7 +99,7 @@ def delete_card(
             id_card=id_card,
             uow=uow.DbUnitOfWork(session_factory=session_factory),
         )
-    except ValueError:
+    except KeyError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Card not found.",

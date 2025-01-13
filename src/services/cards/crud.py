@@ -39,12 +39,11 @@ def create_card_in_db(
         raise DuplicateCardException()
 
 
-def read_card_in_db(id_card, uow: AbstractUnitOfWork) -> Card:
+def read_card_in_db(id_card, uow: AbstractUnitOfWork) -> Card | None:
     with uow:
         card = uow.cards.get(id=id_card)
-        if not card:
-            raise ValueError("Card not found")
-        uow.expunge(card)
+        if card:
+            uow.expunge(card)
     return card
 
 
@@ -155,31 +154,29 @@ def update_card_in_db(
     german: str,
     italian: str,
     uow: AbstractUnitOfWork,
-) -> Card:
+) -> Card | None:
     with uow:
         card = uow.cards.get(id=id_card)
-        if not card:
-            raise ValueError("Card not found")
+        if card:
+            card.word_type = word_type
+            card.german = german
+            card.italian = italian
 
-        card.word_type = word_type
-        card.german = german
-        card.italian = italian
+            relevance = uow.relevance_levels.get_by_description(relevance_description)
+            if not relevance:
+                relevance = Relevance(description=relevance_description)
+            card.relevance = relevance
 
-        relevance = uow.relevance_levels.get_by_description(relevance_description)
-        if not relevance:
-            relevance = Relevance(description=relevance_description)
-        card.relevance = relevance
-
-        uow.commit()
-        uow.refresh(card)
-        uow.expunge(card)
+            uow.commit()
+            uow.refresh(card)
+            uow.expunge(card)
     return card
 
 
 def delete_card_in_db(id_card: int, uow: AbstractUnitOfWork) -> None:
     with uow:
-        card_to_delete = uow.cards.get(id=id_card)
-        if not card_to_delete:
-            raise ValueError("Card not found")
-        uow.cards.delete(card=card_to_delete)
+        card = uow.cards.get(id=id_card)
+        if not card:
+            raise KeyError("Card not found")
+        uow.cards.delete(card=card)
         uow.commit()
