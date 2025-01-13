@@ -1,6 +1,3 @@
-from typing import Self
-
-
 class Relevance:
     def __init__(self, id: int | None = None, description: str = ""):
         self.id = id
@@ -9,7 +6,7 @@ class Relevance:
     def __hash__(self) -> int:
         return hash(self.description)
 
-    def __eq__(self, other: Self) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other is None:
             return False
         elif not isinstance(other, Relevance):

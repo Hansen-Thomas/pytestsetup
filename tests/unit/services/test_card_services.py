@@ -1,10 +1,10 @@
 import pytest
 
 from app.schemas.card import PydCardInput
-from core.domain.card_repository import DuplicateCardException
 from core.domain.card import Card
 from core.domain.relevance import Relevance
 from core.domain.word_type import WordType
+from core.exceptions import DuplicateResourceError, ResourceNotFoundError
 from core.services.cards.crud import create_card_in_db, delete_card_in_db, update_card_in_db
 from core.services.unit_of_work import FakeUnitOfWork, DbUnitOfWork
 
@@ -37,7 +37,7 @@ def test_duplicate_card_can_not_be_added():
         italian="la casa",
         uow=uow,
     )
-    with pytest.raises(DuplicateCardException):
+    with pytest.raises(DuplicateResourceError):
         create_card_in_db(
             word_type=WordType.NONE,
             relevance_description="A - Beginner",
@@ -101,14 +101,15 @@ def test_missing_card_can_not_be_updated():
         italian="l'albero",
     )
 
-    update_card_in_db(
-        id_card=4711,  # does not exist
-        word_type=updated_card_input.word_type,
-        relevance_description=updated_card_input.relevance_description,
-        german=updated_card_input.german,
-        italian=updated_card_input.italian,
-        uow=uow,
-    )
+    with pytest.raises(ResourceNotFoundError):
+        update_card_in_db(
+            id_card=4711,  # does not exist
+            word_type=updated_card_input.word_type,
+            relevance_description=updated_card_input.relevance_description,
+            german=updated_card_input.german,
+            italian=updated_card_input.italian,
+            uow=uow,
+        )
     with uow:
         all_cards = uow.cards.all()
         assert not all_cards
@@ -159,7 +160,7 @@ def test_missing_card_can_not_be_deleted():
         uow.cards.add(card)
         uow.commit()
 
-    with pytest.raises(KeyError):
+    with pytest.raises(ResourceNotFoundError):
         delete_card_in_db(id_card=4712, uow=uow)  # wrong id, does not exist!
 
     # inspect result:

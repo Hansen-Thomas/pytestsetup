@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.dependencies import get_session_factory
 import app.schemas.card as schemas
-from core.domain.card_repository import DuplicateCardException
+from core.exceptions import DuplicateResourceError, ResourceNotFoundError
 import core.services.cards.crud as crud
 import core.services.unit_of_work as uow
 
@@ -13,11 +13,15 @@ import core.services.unit_of_work as uow
 router = APIRouter()
 
 
-@router.post("/cards", status_code=status.HTTP_201_CREATED)
-def add_card(
+@router.post(
+    "/cards",
+    response_model=schemas.PydCard,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_card(
     card_input: schemas.PydCardInput,
     session_factory: sessionmaker = Depends(get_session_factory),
-) -> schemas.PydCard:
+) -> Any:
     try:
         new_card = crud.create_card_in_db(
             word_type=card_input.word_type,
@@ -27,18 +31,18 @@ def add_card(
             uow=uow.DbUnitOfWork(session_factory=session_factory),
         )
         return schemas.convert_to_pydantic(new_card)
-    except DuplicateCardException:
+    except DuplicateResourceError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Card already exists.",
         )
 
 
-@router.get("/cards")
-def get_all_cards(
+@router.get("/cards", response_model=list[schemas.PydCard])
+def read_cards(
     session_factory: sessionmaker = Depends(get_session_factory),
-) -> list[schemas.PydCard]:
-    domain_cards = crud.read_all_cards_in_db(
+) -> Any:
+    domain_cards = crud.read_cards_from_db(
         uow=uow.DbUnitOfWork(session_factory=session_factory)
     )
     pyd_cards = list(map(schemas.convert_to_pydantic, domain_cards))
@@ -46,28 +50,21 @@ def get_all_cards(
 
 
 @router.get("/cards/{id_card}", response_model=schemas.PydCardResponse)
-def get_card(
+def read_card(
     id_card: int,
     session_factory: sessionmaker = Depends(get_session_factory),
 ) -> Any:
-    domain_card = crud.read_card_in_db(
-        id_card=id_card,
-        uow=uow.DbUnitOfWork(session_factory=session_factory),
-    )
-    if domain_card:
+    try:
+        domain_card = crud.read_card_from_db(
+            id_card=id_card,
+            uow=uow.DbUnitOfWork(session_factory=session_factory),
+        )
         return schemas.convert_to_pydantic(domain_card)
-    else:
+    except ResourceNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Card not found.",
         )
-
-    # item = session.get(Item, id)
-    # if not item:
-    #     raise HTTPException(status_code=404, detail="Item not found")
-    # if not current_user.is_superuser and (item.owner_id != current_user.id):
-    #     raise HTTPException(status_code=400, detail="Not enough permissions")
-    # return item
 
 
 @router.put("/cards/{id_card}", response_model=schemas.PydCardResponse)
@@ -76,14 +73,14 @@ def update_card(
     card_input: schemas.PydCardInput,
     session_factory: sessionmaker = Depends(get_session_factory),
 ) -> Any:
-    domain_card = crud.update_card_in_db(
-        id_card=id_card,
-        **card_input.model_dump(),
-        uow=uow.DbUnitOfWork(session_factory=session_factory),
-    )
-    if domain_card:
+    try:
+        domain_card = crud.update_card_in_db(
+            id_card=id_card,
+            **card_input.model_dump(),
+            uow=uow.DbUnitOfWork(session_factory=session_factory),
+        )
         return schemas.convert_to_pydantic(domain_card)
-    else:
+    except ResourceNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Card not found.",
@@ -100,7 +97,7 @@ def delete_card(
             id_card=id_card,
             uow=uow.DbUnitOfWork(session_factory=session_factory),
         )
-    except KeyError:
+    except ResourceNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Card not found.",

@@ -4,12 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from core.domain.card import Card
-
-
-class DuplicateCardException(Exception):
-    def __init__(self, message="Duplicate card found"):
-        self.message = message
-        super().__init__(self.message)
+from core.exceptions import DuplicateResourceError
 
 
 class AbstractCardRepository(ABC):
@@ -41,7 +36,7 @@ class FakeCardRepository(AbstractCardRepository):
 
     def add(self, card: Card) -> None:
         if card in self._cards:
-            raise DuplicateCardException()
+            raise DuplicateResourceError("Card")
         self._cards.add(card)
 
     def all(self) -> list[Card]:

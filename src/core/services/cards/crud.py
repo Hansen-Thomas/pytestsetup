@@ -1,9 +1,9 @@
 from sqlalchemy.exc import IntegrityError
 
-from core.domain.card_repository import DuplicateCardException
 from core.domain.card import Card
 from core.domain.relevance import Relevance
 from core.domain.word_type import WordType
+from core.exceptions import DuplicateResourceError, ResourceNotFoundError
 from core.services.unit_of_work import AbstractUnitOfWork
 
 
@@ -36,18 +36,21 @@ def create_card_in_db(
             uow.expunge(new_card)
         return new_card
     except IntegrityError:
-        raise DuplicateCardException()
+        raise DuplicateResourceError("Card")
 
 
-def read_card_in_db(id_card, uow: AbstractUnitOfWork) -> Card | None:
+def read_card_from_db(id_card, uow: AbstractUnitOfWork) -> Card:
     with uow:
         card = uow.cards.get(id=id_card)
-        if card:
-            uow.expunge(card)
+        if not card:
+            raise ResourceNotFoundError("Card", id_card)
+
+        uow.expunge(card)
     return card
 
 
-def read_all_cards_in_db(uow: AbstractUnitOfWork) -> list[Card]:
+def read_cards_from_db(uow: AbstractUnitOfWork) -> list[Card]:
+    # TODO: Add pagination, filtering, sorting etc.
     """
     Use case: Returns detached objects to use them for templates or as a JSON-
     response.
@@ -154,22 +157,24 @@ def update_card_in_db(
     german: str,
     italian: str,
     uow: AbstractUnitOfWork,
-) -> Card | None:
+) -> Card:
     with uow:
         card = uow.cards.get(id=id_card)
-        if card:
-            card.word_type = word_type
-            card.german = german
-            card.italian = italian
+        if not card:
+            raise ResourceNotFoundError("Card", id_card)
 
-            relevance = uow.relevance_levels.get_by_description(relevance_description)
-            if not relevance:
-                relevance = Relevance(description=relevance_description)
-            card.relevance = relevance
+        card.word_type = word_type
+        card.german = german
+        card.italian = italian
 
-            uow.commit()
-            uow.refresh(card)
-            uow.expunge(card)
+        relevance = uow.relevance_levels.get_by_description(relevance_description)
+        if not relevance:
+            relevance = Relevance(description=relevance_description)
+        card.relevance = relevance
+
+        uow.commit()
+        uow.refresh(card)
+        uow.expunge(card)
     return card
 
 
@@ -177,6 +182,6 @@ def delete_card_in_db(id_card: int, uow: AbstractUnitOfWork) -> None:
     with uow:
         card = uow.cards.get(id=id_card)
         if not card:
-            raise KeyError("Card not found")
+            raise ResourceNotFoundError("Card", id_card)
         uow.cards.delete(card=card)
         uow.commit()
