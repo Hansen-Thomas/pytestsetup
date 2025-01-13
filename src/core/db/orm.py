@@ -26,6 +26,26 @@ def start_mappers():
                 Relevance,
                 lazy="immediate",
                 cascade="save-update, expunge",
+                # Don't choose "all" because of delete: "all" would include
+                # delete, which would lead to the following problem:
+                # If a card shall be deleted, the session would then
+                # automatically cascade this delete-command as well to
+                # the relevance-object that is connected to the card.
+                # But we can expect that re thelevance-record in DB is as well
+                # connected to other cards (normal 1:n-situation in DB).
+                # Deleting the ORM-mapped relevance-object would issue
+                # SQL-statements to delete the corresponding DB-record.
+                # This again is very likely to not work because the DB cannot 
+                # violate that foreign-key-constraint as this relevance-record
+                # is very likely to be connected to other cards in DB already.
+                # 
+                # We always need to differentiate between the ORM-objects and
+                # the DB-records. The cascade-parameter here deals with the
+                # cascading within the ORM-object tree. The cascading in the DB
+                # is defined in the SqlAlchemy-Table-objects with parameters of
+                # the ForeignKey-class ("on_delete" and "on_update"). These
+                # parameters result in DDL that adds these constraints to the
+                # DB-schema.
             ),
         },
     )

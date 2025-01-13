@@ -6,7 +6,7 @@ from core.domain.card import Card
 from core.domain.relevance import Relevance
 
 
-def test_add_card_happy_path(client: TestClient, session_factory):
+def test_create_card_happy_path(client: TestClient, session_factory):
     # card data:
     data = {
         "word_type": WordType.VERB.value,
@@ -34,7 +34,7 @@ def test_add_card_happy_path(client: TestClient, session_factory):
         assert card.relevance.description == "A - Beginner"
 
 
-def test_add_card_unhappy_path_returns_400_and_error_message(client: TestClient):
+def test_create_card_unhappy_path_returns_400_and_error_message(client: TestClient):
     # card data:
     data = {
         "word_type": WordType.VERB.value,
@@ -60,7 +60,7 @@ def test_add_card_unhappy_path_returns_400_and_error_message(client: TestClient)
     assert response.status_code == 400
 
 
-def test_get_card_happy_path(client: TestClient, session_factory):
+def test_read_card_happy_path(client: TestClient, session_factory):
     # arrange:
     with session_factory() as session:
         relevance = Relevance(description="A - Beginner")
@@ -89,7 +89,7 @@ def test_get_card_happy_path(client: TestClient, session_factory):
     assert data["italian"] == "vecchio"
 
 
-def test_get_card_unhappy_path_throws_404(client: TestClient, session_factory):
+def test_read_card_unhappy_path_throws_404(client: TestClient, session_factory):
     # arrange:
     with session_factory() as session:
         relevance = Relevance(description="A - Beginner")
@@ -118,7 +118,7 @@ def test_get_card_unhappy_path_throws_404(client: TestClient, session_factory):
     # assert data["italian"] == "vecchio"
 
 
-def test_get_all_cards_happy_path(client: TestClient, session_factory):
+def test_read_all_cards_happy_path(client: TestClient, session_factory):
     # arrange:
     with session_factory() as session:
         relevance = Relevance(description="A - Beginner")
@@ -145,6 +145,9 @@ def test_get_all_cards_happy_path(client: TestClient, session_factory):
     assert response.status_code == 200
     data = response.json()
     assert data
+
+
+# TODO: Add test for unhappy path.
 
 
 def test_update_card_happy_path(client: TestClient, session_factory):

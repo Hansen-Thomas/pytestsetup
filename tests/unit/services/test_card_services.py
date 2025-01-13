@@ -153,7 +153,7 @@ def test_missing_card_can_not_be_deleted():
         word_type=WordType.ADJECTIVE,
         relevance=Relevance(id=3, description="C - Professional"),
         german="weit",
-        italian="large",
+        italian="largo",
     )
 
     with uow:
