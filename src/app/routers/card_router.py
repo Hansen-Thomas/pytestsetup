@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.dependencies import get_session_factory
 import app.schemas.card as schemas
-from core.exceptions import DuplicateResourceError, ResourceNotFoundError
+import core.exceptions as exc
 import core.services.cards.crud as crud
 import core.services.unit_of_work as uow
 
@@ -31,7 +31,7 @@ def create_card(
             uow=uow.DbUnitOfWork(session_factory=session_factory),
         )
         return schemas.convert_to_pydantic(new_card)
-    except DuplicateResourceError:
+    except exc.DuplicateResourceError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Card already exists.",
@@ -60,7 +60,7 @@ def read_card(
             uow=uow.DbUnitOfWork(session_factory=session_factory),
         )
         return schemas.convert_to_pydantic(domain_card)
-    except ResourceNotFoundError:
+    except exc.ResourceNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Card not found.",
@@ -80,7 +80,7 @@ def update_card(
             uow=uow.DbUnitOfWork(session_factory=session_factory),
         )
         return schemas.convert_to_pydantic(domain_card)
-    except ResourceNotFoundError:
+    except exc.ResourceNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Card not found.",
@@ -97,7 +97,7 @@ def delete_card(
             id_card=id_card,
             uow=uow.DbUnitOfWork(session_factory=session_factory),
         )
-    except ResourceNotFoundError:
+    except exc.ResourceNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Card not found.",
