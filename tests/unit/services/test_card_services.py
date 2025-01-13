@@ -1,12 +1,12 @@
 import pytest
 
 from app.schemas.card import PydCardInput
-from domain.card_repository import DuplicateCardException
-from domain.card import Card
-from domain.relevance import Relevance
-from domain.word_type import WordType
-from services.cards.crud import create_card_in_db, delete_card_in_db, update_card_in_db
-from services.unit_of_work import FakeUnitOfWork, DbUnitOfWork
+from core.domain.card_repository import DuplicateCardException
+from core.domain.card import Card
+from core.domain.relevance import Relevance
+from core.domain.word_type import WordType
+from core.services.cards.crud import create_card_in_db, delete_card_in_db, update_card_in_db
+from core.services.unit_of_work import FakeUnitOfWork, DbUnitOfWork
 
 
 def test_new_card_can_be_added(session_factory):

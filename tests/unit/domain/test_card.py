@@ -1,6 +1,6 @@
-from domain.card import Card
-from domain.relevance import Relevance
-from domain.word_type import WordType
+from core.domain.card import Card
+from core.domain.relevance import Relevance
+from core.domain.word_type import WordType
 
 
 def test_card_can_solve_guesses():

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from domain.relevance import Relevance
+from core.domain.relevance import Relevance
 
 
 class PydRelevance(BaseModel):

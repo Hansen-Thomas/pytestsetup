@@ -1,10 +1,10 @@
 from sqlalchemy.exc import IntegrityError
 
-from domain.card_repository import DuplicateCardException
-from domain.card import Card
-from domain.relevance import Relevance
-from domain.word_type import WordType
-from services.unit_of_work import AbstractUnitOfWork
+from core.domain.card_repository import DuplicateCardException
+from core.domain.card import Card
+from core.domain.relevance import Relevance
+from core.domain.word_type import WordType
+from core.services.unit_of_work import AbstractUnitOfWork
 
 
 def create_card_in_db(

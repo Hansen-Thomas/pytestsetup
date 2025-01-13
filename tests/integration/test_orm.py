@@ -1,10 +1,10 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from domain.card import Card
-from domain.relevance import Relevance
-from domain.tag import Tag
-from domain.word_type import WordType
+from core.domain.card import Card
+from core.domain.relevance import Relevance
+from core.domain.tag import Tag
+from core.domain.word_type import WordType
 import tests.integration.integration_utils as plain_sql_utils
 
 

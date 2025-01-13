@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from domain.relevance import Relevance
+from core.domain.relevance import Relevance
 
 
 class AbstractRelevanceRepository(ABC):

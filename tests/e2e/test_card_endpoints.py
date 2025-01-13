@@ -1,9 +1,9 @@
 from fastapi.testclient import TestClient
 
-from services.unit_of_work import DbUnitOfWork
-from domain.word_type import WordType
-from domain.card import Card
-from domain.relevance import Relevance
+from core.services.unit_of_work import DbUnitOfWork
+from core.domain.word_type import WordType
+from core.domain.card import Card
+from core.domain.relevance import Relevance
 
 
 def test_add_card_happy_path(client: TestClient, session_factory):

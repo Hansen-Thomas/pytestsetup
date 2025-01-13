@@ -69,7 +69,7 @@ Example usage for a session (with ORM): ---------------------------------------
 
 
 metadata = MetaData()
-import db.tables  # ensures that all tables are loaded into the metadata.
+import core.db.tables  # ensures that all tables are loaded into the metadata.
 
 
 # 2) setup the database-URL-objects: ------------------------------------------

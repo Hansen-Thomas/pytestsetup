@@ -1,4 +1,4 @@
-import db
+import core.db as db
 
 
 def get_session_factory():

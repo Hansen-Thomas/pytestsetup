@@ -8,8 +8,8 @@ from sqlalchemy import (
     UniqueConstraint,
 )
 
-from db import metadata
-from domain.word_type import WordType
+from core.db import metadata
+from core.domain.word_type import WordType
 
 card_table = Table(
     "Card",

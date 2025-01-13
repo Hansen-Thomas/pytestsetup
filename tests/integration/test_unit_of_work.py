@@ -2,9 +2,9 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from services.unit_of_work import DbUnitOfWork
-from domain.card import Card
-from domain.tag import Tag
+from core.services.unit_of_work import DbUnitOfWork
+from core.domain.card import Card
+from core.domain.tag import Tag
 import tests.integration.integration_utils as plain_sql_utils
 
 

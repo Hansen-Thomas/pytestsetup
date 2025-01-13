@@ -9,7 +9,7 @@ app.include_router(card_router.router)
 if __name__ == "__main__":
     import uvicorn
 
-    import db.orm as orm
+    import core.db.orm as orm
 
     orm.start_mappers()
 

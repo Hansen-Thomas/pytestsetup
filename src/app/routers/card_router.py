@@ -1,12 +1,13 @@
 from typing import Any
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import sessionmaker
 
 from app.dependencies import get_session_factory
 import app.schemas.card as schemas
-from domain.card_repository import DuplicateCardException
-import services.cards.crud as crud
-import services.unit_of_work as uow
+from core.domain.card_repository import DuplicateCardException
+import core.services.cards.crud as crud
+import core.services.unit_of_work as uow
 
 
 router = APIRouter()

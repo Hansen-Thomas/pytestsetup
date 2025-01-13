@@ -1,4 +1,4 @@
-from domain.tag import Tag
+from core.domain.tag import Tag
 
 
 def get_tag1() -> Tag:

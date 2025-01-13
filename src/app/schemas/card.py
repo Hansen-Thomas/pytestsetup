@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 
 import app.schemas.relevance as relevance_schemas
-from domain.card import Card
-from domain.word_type import WordType
+from core.domain.card import Card
+from core.domain.word_type import WordType
 
 
 class PydCardInput(BaseModel):

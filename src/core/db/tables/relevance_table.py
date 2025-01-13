@@ -1,10 +1,10 @@
 from sqlalchemy import Table, Column, Integer, String
 
-from db import metadata
+from core.db import metadata
 
-tag_table = Table(
-    "Tag",
+relevance_table = Table(
+    "Relevance",
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("value", String, unique=True),
+    Column("description", String, unique=True),
 )

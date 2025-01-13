@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from domain.tag import Tag
+from core.domain.tag import Tag
 
 
 class AbstractTagRepository(ABC):

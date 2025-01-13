@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session
 
-from domain.card_repository import DbCardRepository
-from domain.card import Card
-from domain.relevance import Relevance
-from domain.word_type import WordType
+from core.domain.card_repository import DbCardRepository
+from core.domain.card import Card
+from core.domain.relevance import Relevance
+from core.domain.word_type import WordType
 import tests.integration.integration_utils as plain_sql_utils
 
 

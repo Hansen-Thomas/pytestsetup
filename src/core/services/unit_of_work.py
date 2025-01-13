@@ -3,17 +3,17 @@ from typing import Self
 
 from sqlalchemy.orm import Session, sessionmaker
 
-from domain.card_repository import (
+from core.domain.card_repository import (
     AbstractCardRepository,
     FakeCardRepository,
     DbCardRepository,
 )
-from domain.relevance_repository import (
+from core.domain.relevance_repository import (
     AbstractRelevanceRepository,
     FakeRelevanceRepository,
     DbRelevanceRepository,
 )
-from domain.tag_repository import (
+from core.domain.tag_repository import (
     AbstractTagRepository,
     FakeTagRepository,
     DbTagRepository,

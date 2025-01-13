@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from domain.card import Card
+from core.domain.card import Card
 
 
 class DuplicateCardException(Exception):

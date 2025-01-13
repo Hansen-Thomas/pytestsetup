@@ -1,8 +1,8 @@
 import datetime
 
-from domain.relevance import Relevance
-from domain.tag import Tag
-from domain.word_type import WordType
+from core.domain.relevance import Relevance
+from core.domain.tag import Tag
+from core.domain.word_type import WordType
 
 
 class Card:

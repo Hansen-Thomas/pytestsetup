@@ -5,8 +5,8 @@ from sqlalchemy.orm import sessionmaker, clear_mappers
 
 from app.main import app
 from app.dependencies import get_session_factory
-import db
-import db.orm as orm
+import core.db as db
+import core.db.orm as orm
 
 
 @pytest.fixture(name="client")

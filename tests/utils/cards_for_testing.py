@@ -1,4 +1,4 @@
-from domain.card import Card
+from core.domain.card import Card
 # from domain.word_type import WordType
 
 

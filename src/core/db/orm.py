@@ -1,12 +1,12 @@
 from sqlalchemy.orm import registry, relationship
 
-from domain.card import Card
-from domain.relevance import Relevance
-from domain.tag import Tag
-from db.tables.card_table import card_table
-from db.tables.relevance_table import relevance_table
-from db.tables.tag_table import tag_table
-from db.tables.card_has_tag_table import card_has_tag_table
+from core.domain.card import Card
+from core.domain.relevance import Relevance
+from core.domain.tag import Tag
+from core.db.tables.card_table import card_table
+from core.db.tables.relevance_table import relevance_table
+from core.db.tables.tag_table import tag_table
+from core.db.tables.card_has_tag_table import card_has_tag_table
 
 
 def start_mappers():
