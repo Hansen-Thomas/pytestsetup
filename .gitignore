@@ -16,3 +16,6 @@ stage.db
 
 # Environment-files
 .env
+
+# Logs:
+logs/

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import logging
 from typing import Self
 
 from sqlalchemy.orm import Session, sessionmaker
@@ -18,6 +19,9 @@ from core.domain.tag_repository import (
     FakeTagRepository,
     DbTagRepository,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 class AbstractUnitOfWork(ABC):
@@ -87,6 +91,7 @@ class DbUnitOfWork(AbstractUnitOfWork):
         self.session_shall_expire_on_commit = session_shall_expire_on_commit
 
     def __enter__(self):
+        logger.debug("DB UOW: Entered, start session.")
         self.session = self.session_factory()
         self.session.expire_on_commit = self.session_shall_expire_on_commit
 
@@ -99,12 +104,15 @@ class DbUnitOfWork(AbstractUnitOfWork):
     def __exit__(self, *args) -> None:
         super().__exit__(*args)
         self.session.close()
+        logger.debug("DB UOW: Exited, session closed.")
 
     def commit(self) -> None:
         self.session.commit()
+        logger.debug("DB UOW: Session committed.")
 
     def rollback(self) -> None:
         self.session.rollback()
+        logger.debug("DB UOW: Session rolled back.")
 
     def refresh(self, instance) -> None:
         self.session.refresh(instance)
