@@ -114,11 +114,9 @@ def test_read_card_unhappy_path_throws_404(client: TestClient, session_factory):
 
     # assert:
     assert response.status_code == 404
-    # data = response.json()
-    # assert data["italian"] == "vecchio"
 
 
-def test_read_all_cards_happy_path(client: TestClient, session_factory):
+def test_read_cards_happy_path(client: TestClient, session_factory):
     # arrange:
     with session_factory() as session:
         relevance = Relevance(description="A - Beginner")
@@ -144,10 +142,44 @@ def test_read_all_cards_happy_path(client: TestClient, session_factory):
     # assert:
     assert response.status_code == 200
     data = response.json()
-    assert data
+    assert len(data) == 2
 
 
-# TODO: Add test for unhappy path.
+def test_read_cards_pagination(client: TestClient, session_factory):
+    # arrange:
+    with session_factory() as session:
+        relevance = Relevance(description="A - Beginner")
+        card_1 = Card(
+            word_type=WordType.VERB,
+            relevance=relevance,
+            german="haben",
+            italian="avere",
+        )
+        card_2 = Card(
+            word_type=WordType.ADJECTIVE,
+            relevance=relevance,
+            german="alt",
+            italian="vecchio",
+        )
+        card_3 = Card(
+            word_type=WordType.NOUN,
+            relevance=relevance,
+            german="das Haus",
+            italian="la casa",
+        )
+        session.add(card_1)
+        session.add(card_2)
+        session.add(card_3)
+        session.commit()
+
+    # act:
+    response = client.get("/cards?page=2&page_size=2")
+
+    # assert:
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]["german"] == "das Haus"
 
 
 def test_update_card_happy_path(client: TestClient, session_factory):

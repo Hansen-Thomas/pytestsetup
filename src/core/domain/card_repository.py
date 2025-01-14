@@ -53,7 +53,6 @@ class FakeCardRepository(AbstractCardRepository):
         return card[0]
 
     def get_list(self, skip: int, limit: int) -> tuple[int, list[Card]]:
-        # TODO: skip und limit implementieren
         return (len(self._cards), list(self._cards))
 
     def delete(self, card: Card) -> None:
