@@ -13,4 +13,4 @@ if __name__ == "__main__":
 
     orm.start_mappers()
 
-    uvicorn.run(app, host="localhost", port=8000)
+    uvicorn.run("main:app", host="localhost", port=8000, reload=True)
