@@ -6,8 +6,10 @@ from core.domain.word_type import WordType
 from core.exceptions import DuplicateResourceError, ResourceNotFoundError
 from core.services.unit_of_work import AbstractUnitOfWork
 from core.utils.pagination import PaginationResult
+from core.utils.logging_utils import log_method
 
 
+@log_method
 def create_card_in_db(
     word_type: WordType,
     relevance_description: str,
@@ -40,6 +42,7 @@ def create_card_in_db(
         raise DuplicateResourceError("Card")
 
 
+@log_method
 def read_card_from_db(
     id_card: int,
     uow: AbstractUnitOfWork,
@@ -52,6 +55,7 @@ def read_card_from_db(
     return card
 
 
+@log_method
 def read_cards_from_db(
     uow: AbstractUnitOfWork,
     page: int = 1,
@@ -162,6 +166,7 @@ def read_cards_from_db(
     )
 
 
+@log_method
 def update_card_in_db(
     id_card: int,
     word_type: WordType,
@@ -190,6 +195,7 @@ def update_card_in_db(
     return card
 
 
+@log_method
 def delete_card_in_db(
     id_card: int,
     uow: AbstractUnitOfWork,
