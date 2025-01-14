@@ -6,6 +6,8 @@ import os
 import sys
 import traceback
 
+logger = logging.getLogger("method_logger")
+
 
 def setup_logging(
     default_level=logging.INFO,
@@ -29,6 +31,8 @@ def setup_logging(
 
 
 def global_exception_hook(type, value, traceback_obj):
+    """Used to log unhandled exceptions before the app crashes."""
+
     error_msg = "".join(traceback.format_exception(type, value, traceback_obj))
     logger = logging.getLogger(__name__)
     logger.error(f"unhandled Exception: {error_msg},")
@@ -36,9 +40,9 @@ def global_exception_hook(type, value, traceback_obj):
     sys.exit(1)
 
 
-logger = logging.getLogger("method_logger")
-
 def log_method(func):
+    """Decorator to log method-calls and return-values."""
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         # Log the method name
