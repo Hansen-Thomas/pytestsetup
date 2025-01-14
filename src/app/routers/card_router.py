@@ -15,7 +15,7 @@ router = APIRouter()
 
 @router.post(
     "/cards",
-    response_model=schemas.PydCard,
+    response_model=schemas.PydCardResponse,
     status_code=status.HTTP_201_CREATED,
 )
 def create_card(
@@ -38,14 +38,21 @@ def create_card(
         )
 
 
-@router.get("/cards", response_model=list[schemas.PydCard])
+@router.get("/cards", response_model=list[schemas.PydCardResponse])
 def read_cards(
     session_factory: sessionmaker = Depends(get_session_factory),
+    page: int = 1,
+    page_size: int = 100,
 ) -> Any:
-    domain_cards = crud.read_cards_from_db(
-        uow=uow.DbUnitOfWork(session_factory=session_factory)
+    """
+    read_cards always works with pagination!
+    """
+    result = crud.read_cards_from_db(
+        uow=uow.DbUnitOfWork(session_factory=session_factory),
+        page=page,
+        page_size=page_size,
     )
-    pyd_cards = list(map(schemas.convert_to_pydantic, domain_cards))
+    pyd_cards = list(map(schemas.convert_to_pydantic, result.records))
     return pyd_cards
 
 

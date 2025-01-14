@@ -5,6 +5,7 @@ from core.domain.relevance import Relevance
 from core.domain.word_type import WordType
 from core.exceptions import DuplicateResourceError, ResourceNotFoundError
 from core.services.unit_of_work import AbstractUnitOfWork
+from core.utils.pagination import PaginationResult
 
 
 def create_card_in_db(
@@ -39,18 +40,23 @@ def create_card_in_db(
         raise DuplicateResourceError("Card")
 
 
-def read_card_from_db(id_card, uow: AbstractUnitOfWork) -> Card:
+def read_card_from_db(
+    id_card: int,
+    uow: AbstractUnitOfWork,
+) -> Card:
     with uow:
         card = uow.cards.get(id=id_card)
         if not card:
             raise ResourceNotFoundError("Card", id_card)
-
         uow.expunge(card)
     return card
 
 
-def read_cards_from_db(uow: AbstractUnitOfWork) -> list[Card]:
-    # TODO: Add pagination, filtering, sorting etc.
+def read_cards_from_db(
+    uow: AbstractUnitOfWork,
+    page: int = 1,
+    page_size: int = 100,
+) -> PaginationResult:
     """
     Use case: Returns detached objects to use them for templates or as a JSON-
     response.
@@ -135,8 +141,9 @@ def read_cards_from_db(uow: AbstractUnitOfWork) -> list[Card]:
       nothing we can avoid when learning sqlalchemy!
 
     """
+    skip = (page - 1) * page_size
     with uow:
-        cards = uow.cards.all()
+        count_cards, cards = uow.cards.get_list(skip=skip, limit=page_size)
         uow.expunge_all()  # needs to be called!
 
         # (otherwise the rollback and or closing the session would lead to
@@ -147,7 +154,12 @@ def read_cards_from_db(uow: AbstractUnitOfWork) -> list[Card]:
     #     first_card = cards[0]
     #     print(first_card.relevance)
 
-    return cards
+    return PaginationResult.build(
+        records=cards,
+        count_records=count_cards,
+        page_size=page_size,
+        current_page=page,
+    )
 
 
 def update_card_in_db(
@@ -178,7 +190,10 @@ def update_card_in_db(
     return card
 
 
-def delete_card_in_db(id_card: int, uow: AbstractUnitOfWork) -> None:
+def delete_card_in_db(
+    id_card: int,
+    uow: AbstractUnitOfWork,
+) -> None:
     with uow:
         card = uow.cards.get(id=id_card)
         if not card:

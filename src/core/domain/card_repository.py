@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from core.domain.card import Card
@@ -18,6 +18,10 @@ class AbstractCardRepository(ABC):
 
     @abstractmethod
     def get(self, id: int) -> Card | None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_list(self, skip: int, limit: int) -> tuple[int, list[Card]]:
         raise NotImplementedError
 
     @abstractmethod
@@ -48,6 +52,10 @@ class FakeCardRepository(AbstractCardRepository):
             return None
         return card[0]
 
+    def get_list(self, skip: int, limit: int) -> tuple[int, list[Card]]:
+        # TODO: skip und limit implementieren
+        return (len(self._cards), list(self._cards))
+
     def delete(self, card: Card) -> None:
         if card in self._cards:
             self._cards.remove(card)
@@ -64,9 +72,23 @@ class DbCardRepository(AbstractCardRepository):
         stmt = select(Card)
         return list(self.session.scalars(stmt).all())
 
+    def delete(self, card: Card) -> None:
+        self.session.delete(card)
+
     def get(self, id: int) -> Card | None:
         stmt = select(Card).where(Card.id == id)
         return self.session.scalar(stmt)
 
-    def delete(self, card: Card) -> None:
-        self.session.delete(card)
+    def get_list(
+        self,
+        skip: int = 0,
+        limit: int = 100,
+    ) -> tuple[int, list[Card]]:
+        count_stmt = select(func.count()).select_from(Card)
+        count = self.session.scalar(count_stmt)
+        count = count if count else 0
+
+        stmt = select(Card).offset(skip).limit(limit)
+        cards = self.session.scalars(stmt).all()
+
+        return (count, list(cards))
