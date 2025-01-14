@@ -1,6 +1,6 @@
 # About this Project
 
-The basic idea of this project is to have a kind of playground to learn and fully understand how to setup a Python-architecture that enables test-driven development. It is all based on the book "Architecture Patterns with Python" (written by Percival & Gregory, published by O'Reilly) and targets on really understanding everything necessary of what happens under the hood in the frameworks used in that architecture.
+The basic idea of this project is to have kind of a playground to learn and fully understand how to setup a Python-architecture that enables test-driven development. It is all based on the book "Architecture Patterns with Python" (written by Percival & Gregory, published by O'Reilly) and targets on really understanding everything necessary of what happens under the hood in the frameworks used in that architecture.
 
 ## About real projects
 

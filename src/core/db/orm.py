@@ -43,7 +43,7 @@ def start_mappers():
                 # the DB-records. The cascade-parameter here deals with the
                 # cascading within the ORM-object tree. The cascading in the DB
                 # is defined in the SqlAlchemy-Table-objects with parameters of
-                # the ForeignKey-class ("on_delete" and "on_update"). These
+                # the ForeignKey-class ("ondelete" and "onupdate"). These
                 # parameters result in DDL that adds these constraints to the
                 # DB-schema.
             ),
