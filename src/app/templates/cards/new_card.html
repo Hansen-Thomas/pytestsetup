@@ -1,0 +1,34 @@
+{% extends "base.html" %} {% block title %}Card{% endblock %} {% block main_content %}
+<main>
+    <h3>Card</h3>
+
+    <!-- form of a card -->
+    <form action="/cards" method="POST">
+        <button type="submit">Save</button>
+        <div>
+            <label for="word_type">Word type:</label>
+            <select id="word_type" name="word_type">
+                <option value="NOUN">Noun</option>
+                <option value="VERB">Verb</option>
+                <option value="ADJECTIVE">Adjective</option>
+            </select>
+        </div>
+        <div>
+            <label for="german">German:</label>
+            <input id="german" name="german" type="text">
+        </div>
+        <div>
+            <label for="italian">Italian:</label>
+            <input id="italian" name="italian" type="text">
+        </div>
+        <div>
+            <label for="relevance">Relevance:</label>
+            <select id="relevance" name="relevance_description">
+                <option>A - Beginner</option>
+                <option>B - Intermediate</option>
+                <option>C - Professional</option>
+            </select>
+        </div>
+    </form>
+</main>
+{% endblock %}

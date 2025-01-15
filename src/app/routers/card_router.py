@@ -1,9 +1,10 @@
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi.responses import RedirectResponse
 
 from app.dependencies import get_session_factory
-import app.schemas.card as schemas
+import app.schemas.card as card_schemas
 from app.templates import templates
 import core.exceptions as exc
 import core.services.cards.crud as crud
@@ -15,27 +16,45 @@ router = APIRouter()
 
 @router.post(
     "/cards",
-    response_model=schemas.PydCardResponse,
+    response_model=card_schemas.PydCardResponse,
     status_code=status.HTTP_201_CREATED,
 )
-def create_card(
-    card_input: schemas.PydCardInput,
+async def create_card(
+    request: Request,
+    # card_input: card_schemas.PydCardInput,
+    # card_input: card_schemas.PydCardInput = Form(),
     session_factory=Depends(get_session_factory),
 ) -> Any:
+    
+    # check if input is provided as JSON or as form-content:
+    if request.headers.get("content-type") == "application/json":
+        card_input = await request.json()
+        card_input = card_schemas.PydCardInput(**card_input)
+    else:
+        form_data = await request.form()
+        card_input = card_schemas.PydCardInput(**form_data)
+
     try:
+        # add card:
         new_domain_card = crud.create_card_in_db(
             **card_input.model_dump(),
             uow=uow.DbUnitOfWork(session_factory=session_factory),
         )
-        return schemas.convert_to_pydantic(new_domain_card)
+        # create response:
+        accept = request.headers.get("accept")
+        if accept and "text/html" in accept:
+            return RedirectResponse(url="/cards", status_code=303)
+            # (change status-code to change from POST- to GET-request.)
+        else:
+            return card_schemas.convert_to_pydantic(new_domain_card)
     except exc.DuplicateResourceError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Card already exists.",
         )
+    
 
-
-@router.get("/cards", response_model=list[schemas.PydCardResponse])
+@router.get("/cards", response_model=list[card_schemas.PydCardResponse])
 def read_cards(
     request: Request,
     session_factory=Depends(get_session_factory),
@@ -61,11 +80,21 @@ def read_cards(
             },
         )
     else:
-        result.serialize_records(schemas.convert_to_pydantic)
+        result.serialize_records(card_schemas.convert_to_pydantic)
         return result.records
 
 
-@router.get("/cards/{id_card}", response_model=schemas.PydCardResponse)
+@router.get("/cards/new")
+def new_card(request: Request):
+    accept = request.headers.get("accept")
+    if accept and "text/html" in accept:
+        return templates.TemplateResponse(
+            request=request,
+            name="cards/new_card.html",
+        )
+
+
+@router.get("/cards/{id_card}", response_model=card_schemas.PydCardResponse)
 def read_card(
     id_card: int,
     session_factory=Depends(get_session_factory),
@@ -75,7 +104,7 @@ def read_card(
             id_card=id_card,
             uow=uow.DbUnitOfWork(session_factory=session_factory),
         )
-        return schemas.convert_to_pydantic(domain_card)
+        return card_schemas.convert_to_pydantic(domain_card)
     except exc.ResourceNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -83,10 +112,10 @@ def read_card(
         )
 
 
-@router.put("/cards/{id_card}", response_model=schemas.PydCardResponse)
+@router.put("/cards/{id_card}", response_model=card_schemas.PydCardResponse)
 def update_card(
     id_card: int,
-    card_input: schemas.PydCardInput,
+    card_input: card_schemas.PydCardInput,
     session_factory=Depends(get_session_factory),
 ) -> Any:
     try:
@@ -95,7 +124,7 @@ def update_card(
             **card_input.model_dump(),
             uow=uow.DbUnitOfWork(session_factory=session_factory),
         )
-        return schemas.convert_to_pydantic(updated_domain_card)
+        return card_schemas.convert_to_pydantic(updated_domain_card)
     except exc.ResourceNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
