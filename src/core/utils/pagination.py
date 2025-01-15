@@ -38,3 +38,6 @@ class PaginationResult:
             has_next_page=has_next_page,
             has_previous_page=has_previous_page,
         )
+
+    def serialize_records(self, converter_func) -> None:
+        self.records = list(map(converter_func, self.records))

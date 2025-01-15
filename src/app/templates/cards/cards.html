@@ -1,0 +1,28 @@
+{% extends "base.html" %} {% block title %}Cards{% endblock %} {% block main_content %}
+<main>
+    <h3>Cards</h3>
+
+    <!-- table of cards -->
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Word Type</th>
+                <th>German</th>
+                <th>Italian</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for card in pagination_result.records %}
+            <tr>
+                <td>{{ card.id }}</td>
+                <td>{{ card.word_type.value }}</td>
+                <td>{{ card.german }}</td>
+                <td>{{ card.italian }}</td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+{% endblock %}

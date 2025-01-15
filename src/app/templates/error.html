@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <title>Error {{ status_code }}</title>
+  </head>
+  <body>
+    <main>
+      <h1 style="margin-bottom: 20px;">Error {{ status_code }}</h1>
+      <p style="margin-bottom: 20px;">{{ error_message }}</p>
+      <!-- {% if status_code == 401 %}
+      <a class="internal-link" href="/login">Login</a>
+      {% else %}
+      <a class="internal-link" href="/pim-records">Back</a>
+      {% endif %} -->
+    </main>
+  </body>
+</html>

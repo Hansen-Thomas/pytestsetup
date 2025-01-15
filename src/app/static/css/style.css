@@ -1,0 +1,394 @@
+/* resetting CSS margin: remove default margin on text tags */
+* {
+  margin: 0;
+}
+
+/*
+  Use a more-intuitive box-sizing model.
+*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* remove built-in form typography
+margin: remove default margin on text tags
+*/
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/*
+  Avoid text overflows
+*/
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+@font-face {
+  font-family: "InterRegular";
+  src: url("../fonts/Inter-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: fallback;
+}
+
+/* element-styles: ========================================================= */
+
+a {
+  color: rgba(226, 228, 233, 0.82);
+  text-decoration: none;
+}
+
+a.internal-link::after {
+  content: "\00A0↪";
+}
+
+a:hover {
+  color: #fa0;
+}
+
+h3 {
+  font-size: 1.5rem;
+  padding: 0.5rem 0;
+}
+
+h4 {
+  font-size: 1.25rem;
+  padding: 0.5rem 0;
+}
+
+ul {
+  list-style-type: none;
+  padding-inline-start: 20px;
+}
+
+li {
+  margin: 10px 0;
+}
+
+select {
+  appearance: none;
+  background-color: #2d56c7;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  outline: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 3px center;
+  background-size: 1rem;
+}
+
+select:hover {
+  background-color: #1e3a8a;
+}
+
+select:focus {
+  box-shadow: 0 0 0 3px rgba(45, 86, 199, 0.5);
+}
+
+button {
+  background-color: #2d56c7;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  outline: none;
+}
+
+button:hover {
+  background-color: #1e3a8a;
+}
+
+button:focus {
+  box-shadow: 0 0 0 3px rgba(45, 86, 199, 0.5);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th,
+table td {
+  padding: 10px 20px;
+}
+
+/* Add alternating row colors */
+table tbody tr:nth-child(odd) {
+  background-color: rgb(40, 40, 48);
+}
+
+table tbody tr:nth-child(even) {
+  background-color: rgb(30, 33, 41); /* White for even rows */
+}
+
+/* area-styles: ============================================================ */
+
+body {
+  background-color: rgb(30, 33, 41);
+  color: rgba(226, 228, 233, 0.82);
+  font-family: InterRegular, -apple-system, BlinkMacSystemFont, Roboto, Ubuntu, "Segoe UI", "Helvetica Neue", Arial,
+    sans-serif;
+}
+
+header {
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  background-color: #2d56c7;
+  color: white;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 70px;
+  z-index: 1;
+}
+
+main {
+  width: 100%;
+  position: absolute;
+  top: 70px;
+  padding: 1rem;
+}
+
+/* Burger-menu: ============================================================ */
+
+/* hidden checkbox: #burger */
+#burger {
+  display: none;
+}
+
+nav {
+  width: 40%;
+  position: absolute;
+  top: 70px;
+  left: -40%;
+  background-color: #2d56c7;
+  height: calc(100vh - 70px);
+  transition: left 0.5s ease;
+}
+
+#burger:checked ~ nav {
+  left: 0;
+}
+
+/* the visual burger-icon: .burgericon */
+.burgericon {
+  width: 30px;
+  height: 30px;
+  margin-right: 15px;
+}
+
+@media (min-width: 768px) {
+  .burgericon {
+    display: none;
+  }
+  nav {
+    position: static;
+    width: auto;
+    height: auto;
+    margin-left: auto;
+  }
+  nav ul {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  nav li {
+    margin: 10px 10px;
+  }
+}
+
+.burgericon div {
+  width: 90%;
+  margin: 7px 5%;
+  height: 3px;
+  background-color: white;
+}
+
+/* rotate burger to an X on click: */
+#burger:checked ~ label .burgericon {
+  margin-top: 20px;
+}
+#burger:checked ~ label .burgericon div:first-of-type {
+  transform: rotate(45deg);
+}
+#burger:checked ~ label .burgericon div:last-child {
+  transform: rotate(-45deg);
+  margin-top: -10px;
+}
+#burger:checked ~ label div:nth-child(2) {
+  display: none;
+}
+
+.menu-title {
+  display: flex;
+}
+
+/* class-styles: =========================================================== */
+
+.pagination {
+  padding: 1rem 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.collapse-container {
+  padding: 10px;
+  margin: 10px 0;
+  border: mediumaquamarine 1px dotted;
+  border-radius: 5px;
+}
+
+.collapse-toggle {
+  cursor: pointer;
+}
+
+.collapse-toggle::after {
+  content: "\2192"; /* Right arrow symbol (→) */
+  margin-left: 10px;
+  font-size: 18px;
+  display: inline-block;
+  transition: transform 0.5s ease; /* Smooth transition for rotating */
+}
+
+.collapse-toggle.open::after {
+  transform: rotate(90deg);
+}
+
+.hidden {
+  display: none;
+}
+
+/* Forms: ================================================================== */
+
+form {
+  margin: 10px auto;
+}
+
+.oneliner {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+.oneliner input[type="search"] {
+  flex-grow: 1;
+  min-width: 0;
+  border-radius: 5px;
+  padding: 5px;
+}
+.oneliner input[type="search"]:focus {
+  outline: none;
+  border-color: #ffae00;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+@media (min-width: 500px) {
+  .space-right {
+    margin-right: auto;
+  }
+}
+
+.form-group {
+  margin-bottom: 20px;
+  margin-right: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.form-group input {
+  padding: 12px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+.form-group input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+  width: 100%;
+}
+
+.form-group textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 12px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.form-group textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Toggle switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: #2d56c7;
+}
+input:checked + .slider:before {
+  transform: translateX(26px);
+}

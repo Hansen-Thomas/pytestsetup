@@ -1,11 +1,16 @@
+from pathlib import Path
 import sys
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from app.routers import card_router
 
+PATH_STATIC = Path(__file__).parent / "static"
+
 app = FastAPI()
 app.include_router(card_router.router)
+app.mount("/static", StaticFiles(directory=PATH_STATIC), name="static")
 
 
 if __name__ == "__main__":
