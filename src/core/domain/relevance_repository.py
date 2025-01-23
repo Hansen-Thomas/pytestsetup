@@ -16,7 +16,7 @@ class AbstractRelevanceRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_by_description(self, description: str) -> Relevance | None:
+    def get_by_id(self, id: str) -> Relevance | None:
         raise NotImplementedError
 
     @abstractmethod
@@ -34,8 +34,8 @@ class FakeRelevanceRepository(AbstractRelevanceRepository):
     def all(self) -> list[Relevance]:
         return list(self._relevance_levels)
 
-    def get_by_description(self, description: str) -> Relevance | None:
-        relevance = Relevance(description=description)
+    def get_by_id(self, id: str) -> Relevance | None:
+        relevance = Relevance(id=id)
         if relevance in self._relevance_levels:
             return relevance
         return None
@@ -56,8 +56,8 @@ class DbRelevanceRepository(AbstractRelevanceRepository):
         stmt = select(Relevance)
         return list(self.session.scalars(stmt).all())
 
-    def get_by_description(self, description: str) -> Relevance | None:
-        stmt = select(Relevance).where(Relevance.description == description)
+    def get_by_id(self, id: str) -> Relevance | None:
+        stmt = select(Relevance).where(Relevance.id == id)
         return self.session.scalar(stmt)
 
     def delete(self, relevance: Relevance) -> None:

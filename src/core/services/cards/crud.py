@@ -12,6 +12,7 @@ from core.utils.logging_utils import log_method
 @log_method
 def create_card_in_db(
     word_type: WordType,
+    relevance_id: str,
     relevance_description: str,
     german: str,
     italian: str,
@@ -20,11 +21,11 @@ def create_card_in_db(
     try:
         with uow:
             # Business validation:
-            relevance = uow.relevance_levels.get_by_description(
-                description=relevance_description
-            )
+            relevance = uow.relevance_levels.get_by_id(id=relevance_id)
             if not relevance:
-                relevance = Relevance(description=relevance_description)
+                relevance = Relevance(
+                    id=relevance_id, description=relevance_description
+                )
 
             # Processing:
             new_card = Card(
@@ -170,6 +171,7 @@ def read_cards_from_db(
 def update_card_in_db(
     id_card: int,
     word_type: WordType,
+    relevance_id: str,
     relevance_description: str,
     german: str,
     italian: str,
@@ -184,9 +186,12 @@ def update_card_in_db(
         card.german = german
         card.italian = italian
 
-        relevance = uow.relevance_levels.get_by_description(relevance_description)
+        relevance = uow.relevance_levels.get_by_id(relevance_id)
         if not relevance:
-            relevance = Relevance(description=relevance_description)
+            relevance = Relevance(
+                id=relevance_id,
+                description=relevance_description,
+            )
         card.relevance = relevance
 
         uow.commit()

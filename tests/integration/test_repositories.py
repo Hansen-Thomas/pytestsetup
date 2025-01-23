@@ -9,31 +9,37 @@ import tests.integration.integration_utils as plain_sql_utils
 
 def test_db_card_repo_can_load_card_with_tags(session: Session):
     # Arrange:
-    records = [
+    card_records = [
         {
             "id": 7,
             "word_type": "NOUN",
-            "id_relevance": 1,
+            "id_relevance": "A",
             "german": "die Frage",
             "italian": "la domanda",
         },
         {
             "id": 12,
             "word_type": "NOUN",
-            "id_relevance": 1,
+            "id_relevance": "A",
             "german": "die Antwort",
             "italian": "la risposta",
         },
     ]
-    plain_sql_utils.insert_cards(session=session, records=records)
+    plain_sql_utils.insert_cards(session=session, records=card_records)
     session.commit()
 
-    records = [{"id": 3, "value": "Sprache"}, {"id": 5, "value": "Essen"}]
-    plain_sql_utils.insert_tags(session=session, records=records)
+    tag_records = [
+        {"id_tag": 3, "value": "Sprache"},
+        {"id_tag": 5, "value": "Essen"},
+    ]
+    plain_sql_utils.insert_tags(session=session, records=tag_records)
     session.commit()
 
-    records = [{"id_card": 7, "id_tag": 3}]
-    plain_sql_utils.insert_associations(session=session, records=records)
+    associations_records = [{"id_card": 7, "id_tag": 3}]
+    plain_sql_utils.insert_associations(
+        session=session,
+        records=associations_records,
+    )
     session.commit()
 
     # Act:
@@ -43,7 +49,7 @@ def test_db_card_repo_can_load_card_with_tags(session: Session):
     # Assert:
     assert card is not None
     assert card.word_type == WordType.NOUN
-    assert card.id_relevance == 1
+    assert card.id_relevance == "A"
     assert card.german == "die Frage"
     assert card.italian == "la domanda"
     assert len(card.tags) == 1
@@ -54,7 +60,7 @@ def test_db_card_repo_can_save_card_with_tags(session: Session):
     # Arrange:
     card = Card(
         word_type=WordType.NOUN,
-        relevance=Relevance(description="A - Beginner"),
+        relevance=Relevance(id="A", description="Beginner"),
         german="die Natur",
         italian="la natura",
     )
@@ -70,7 +76,7 @@ def test_db_card_repo_can_save_card_with_tags(session: Session):
 
     # table Card:
     result_cards = plain_sql_utils.select_all_cards(session=session)
-    expected_cards = [(1, "NOUN", 1, "die Natur", "la natura")]
+    expected_cards = [(1, "NOUN", "A", "die Natur", "la natura")]
     assert result_cards == expected_cards
 
     # table Tag:

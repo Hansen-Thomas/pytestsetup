@@ -14,9 +14,9 @@ def test_connection_can_persist_data_in_unit_test_db(unit_test_engine: Engine):
             """
         )
         records_relevance = [
-            {"id": 1, "description": "A - Beginner"},
-            {"id": 2, "description": "B - Intermediate"},
-            {"id": 3, "description": "C - Professional"},
+            {"id": "A", "description": "Beginner"},
+            {"id": "B", "description": "Intermediate"},
+            {"id": "C", "description": "Professional"},
         ]
         connection.execute(stmt_insert_relevance, parameters=records_relevance)
 
@@ -30,13 +30,13 @@ def test_connection_can_persist_data_in_unit_test_db(unit_test_engine: Engine):
         records_cards = [
             {
                 "word_type": "NOUN",
-                "id_relevance": 1,
+                "id_relevance": "A",
                 "german": "das Haus",
                 "italian": "la casa",
             },
             {
                 "word_type": "NOUN",
-                "id_relevance": 2,
+                "id_relevance": "B",
                 "german": "der Baum",
                 "italian": "l'albero",
             },
@@ -55,8 +55,8 @@ def test_connection_can_persist_data_in_unit_test_db(unit_test_engine: Engine):
 
         assert result
         expected = [
-            (1, "NOUN", 1, "das Haus", "la casa"),
-            (2, "NOUN", 2, "der Baum", "l'albero"),
+            (1, "NOUN", "A", "das Haus", "la casa"),
+            (2, "NOUN", "B", "der Baum", "l'albero"),
         ]
         for row in result:
             assert row in expected

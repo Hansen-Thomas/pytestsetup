@@ -16,7 +16,14 @@ card_table = Table(
     metadata,
     Column("id", Integer, primary_key=True, autoincrement=True),
     Column("word_type", Enum(WordType)),
-    Column("id_relevance", ForeignKey("Relevance.id")),
+    Column(
+        "id_relevance",
+        String,
+        ForeignKey(
+            "Relevance.id",
+            onupdate="CASCADE",
+        ),
+    ),
     Column("german", String, nullable=False),
     Column("italian", String, nullable=False),
     UniqueConstraint("german", "italian", name="uq_german_italian"),

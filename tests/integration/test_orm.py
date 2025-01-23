@@ -71,11 +71,11 @@ def test_session_can_load_tags(session: Session):
     Proofs that the ORM for tags is properly set up to load data.
     """
     # Arrange:
-    records = [
-        {"id": 7, "value": "Urlaub"},
-        {"id": 8, "value": "Arbeit"},
+    tag_records = [
+        {"id_tag": 7, "value": "Urlaub"},
+        {"id_tag": 8, "value": "Arbeit"},
     ]
-    plain_sql_utils.insert_tags(session=session, records=records)
+    plain_sql_utils.insert_tags(session=session, records=tag_records)
     session.commit()
 
     # Act:
@@ -97,9 +97,9 @@ def test_session_can_load_card_has_tag_association(session: Session):
     """
     # Arrange:
     records_relevance = [
-        {"id": 1, "description": "A - Beginner"},
-        {"id": 2, "description": "B - Intermediate"},
-        {"id": 3, "description": "C - Professional"},
+        {"id": "A", "description": "Beginner"},
+        {"id": "B", "description": "Intermediate"},
+        {"id": "C", "description": "Professional"},
     ]
     plain_sql_utils.insert_relevance_levels(
         session=session,
@@ -110,14 +110,14 @@ def test_session_can_load_card_has_tag_association(session: Session):
         {
             "id": 1,
             "word_type": "NOUN",
-            "id_relevance": 1,
+            "id_relevance": "A",
             "german": "das Haus",
             "italian": "la casa",
         },
         {
             "id": 2,
             "word_type": "NOUN",
-            "id_relevance": 2,
+            "id_relevance": "B",
             "german": "der Baum",
             "italian": "l'albero",
         },
@@ -126,8 +126,8 @@ def test_session_can_load_card_has_tag_association(session: Session):
     session.commit()
 
     records_tags = [
-        {"id": 7, "value": "Urlaub"},
-        {"id": 8, "value": "Arbeit"},
+        {"id_tag": 7, "value": "Urlaub"},
+        {"id_tag": 8, "value": "Arbeit"},
     ]
     plain_sql_utils.insert_tags(session=session, records=records_tags)
     session.commit()
@@ -148,7 +148,7 @@ def test_session_can_load_card_has_tag_association(session: Session):
     expected_card1 = Card(
         id=1,
         word_type=WordType.NOUN,
-        relevance=Relevance(id=1, description="A - Beginner"),
+        relevance=Relevance(id="A", description="Beginner"),
         german="das Haus",
         italian="la casa",
     )
@@ -157,7 +157,7 @@ def test_session_can_load_card_has_tag_association(session: Session):
     expected_card2 = Card(
         id=2,
         word_type=WordType.NOUN,
-        relevance=Relevance(id=2, description="B - Intermediate"),
+        relevance=Relevance(id="B", description="Intermediate"),
         german="der Baum",
         italian="l'albero",
     )
@@ -179,7 +179,7 @@ def test_session_can_save_cards(session: Session):
     Proofs that the ORM for cards is properly set up to save data.
     """
     # Arrange:
-    relevance_1 = Relevance(description="A - Beginner")
+    relevance_1 = Relevance(id="A", description="Beginner")
     cards_to_insert = [
         Card(
             word_type=WordType.VERB,
@@ -202,8 +202,8 @@ def test_session_can_save_cards(session: Session):
 
     # Assert:
     expected = [
-        (1, "VERB", 1, "gehen", "andare"),
-        (2, "VERB", 1, "fliegen", "volare"),
+        (1, "VERB", "A", "gehen", "andare"),
+        (2, "VERB", "A", "fliegen", "volare"),
     ]
     for row in result:
         assert row in expected
@@ -237,7 +237,7 @@ def test_session_can_save_card_has_tag_associations(session: Session):
     # Arrange:
     card = Card(
         word_type=WordType.NOUN,
-        relevance=Relevance(description="A - Beginner"),
+        relevance=Relevance(id="A", description="Beginner"),
         german="das Flugzeug",
         italian="l'aereo",
     )
@@ -254,7 +254,7 @@ def test_session_can_save_card_has_tag_associations(session: Session):
     )
 
     # Assert:
-    expected_card_data = (1, "NOUN", 1, "das Flugzeug", "l'aereo")
+    expected_card_data = (1, "NOUN", "A", "das Flugzeug", "l'aereo")
     expected_tag_values = ["Verkehr", "Beruf"]
     expected_associations = [(1, 1), (1, 2)]
     assert result_card == expected_card_data

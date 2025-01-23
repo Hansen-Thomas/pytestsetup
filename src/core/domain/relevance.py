@@ -1,5 +1,5 @@
 class Relevance:
-    def __init__(self, id: int | None = None, description: str = ""):
+    def __init__(self, id: str, description: str = ""):
         self.id = id
         self.description = description
 
@@ -12,7 +12,7 @@ class Relevance:
         elif not isinstance(other, Relevance):
             return False
         else:
-            return self.description == other.description
+            return self.id == other.id
 
     def __repr__(self) -> str:
         return (

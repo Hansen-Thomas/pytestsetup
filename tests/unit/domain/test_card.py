@@ -6,7 +6,7 @@ from core.domain.word_type import WordType
 def test_card_can_solve_guesses():
     card = Card(
         word_type=WordType.NOUN,
-        relevance=Relevance(description="A - Beginner"),
+        relevance=Relevance(id="A", description="Beginner"),
         german="die Antwort",
         italian="la risposta",
     )
@@ -17,7 +17,7 @@ def test_card_can_solve_guesses():
 def test_card_can_calculate_statistics_after_solving():
     card = Card(
         word_type=WordType.NOUN,
-        relevance=Relevance(description="A - Beginner"),
+        relevance=Relevance(id="A", description="Beginner"),
         german="die Antwort",
         italian="la risposta",
     )
@@ -51,7 +51,7 @@ def test_card_can_calculate_statistics_after_solving():
 def test_card_can_add_and_remove_tags():
     card = Card(
         word_type=WordType.NOUN,
-        relevance=Relevance(description="A - Beginner"),
+        relevance=Relevance(id="A", description="Beginner"),
         german="die Antwort",
         italian="la risposta",
     )
@@ -71,8 +71,8 @@ def test_card_can_add_and_remove_tags():
 
 def test_card_equality():
     """Only both the values for german and italian are relevant for equality."""
-    relevance_A = Relevance(description="A-Level")
-    relevance_B = Relevance(description="B-Level")
+    relevance_A = Relevance(id="A", description="Beginner")
+    relevance_B = Relevance(id="A", description="Intermediate")
 
     card_1 = Card(
         word_type=WordType.NOUN,

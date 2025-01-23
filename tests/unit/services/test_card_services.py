@@ -5,7 +5,11 @@ from core.domain.card import Card
 from core.domain.relevance import Relevance
 from core.domain.word_type import WordType
 from core.exceptions import DuplicateResourceError, ResourceNotFoundError
-from core.services.cards.crud import create_card_in_db, delete_card_in_db, update_card_in_db
+from core.services.cards.crud import (
+    create_card_in_db,
+    delete_card_in_db,
+    update_card_in_db,
+)
 from core.services.unit_of_work import FakeUnitOfWork, DbUnitOfWork
 
 
@@ -13,7 +17,8 @@ def test_new_card_can_be_added(session_factory):
     uow = DbUnitOfWork(session_factory=session_factory)
     create_card_in_db(
         word_type=WordType.NOUN,
-        relevance_description="A - Beginner",
+        relevance_id="A",
+        relevance_description="Beginner",
         german="das Haus",
         italian="la casa",
         uow=uow,
@@ -25,22 +30,24 @@ def test_new_card_can_be_added(session_factory):
         assert new_card.german == "das Haus"
         assert new_card.italian == "la casa"
         assert new_card.word_type == WordType.NOUN
-        assert new_card.relevance == Relevance(description="A - Beginner")
+        assert new_card.relevance == Relevance(id="A", description="Beginner")
 
 
 def test_duplicate_card_can_not_be_added():
     uow = FakeUnitOfWork()
     create_card_in_db(
-        word_type=WordType.NONE,
-        relevance_description="A - Beginner",
+        word_type=WordType.NOUN,
+        relevance_id="A",
+        relevance_description="Beginner",
         german="das Haus",
         italian="la casa",
         uow=uow,
     )
     with pytest.raises(DuplicateResourceError):
         create_card_in_db(
-            word_type=WordType.NONE,
-            relevance_description="A - Beginner",
+            word_type=WordType.NOUN,
+            relevance_id="A",
+            relevance_description="Beginner",
             german="das Haus",
             italian="la casa",
             uow=uow,
@@ -55,10 +62,10 @@ def test_update_existing_card():
     existing_card = Card(
         id=4711,
         word_type=WordType.VERB,
-        id_relevance=1,
+        id_relevance="A",
         relevance=Relevance(
-            id=1,
-            description="A - Beginner",
+            id="A",
+            description="Beginner",
         ),
         german="der Baum",
         italian="l'albero",
@@ -67,7 +74,8 @@ def test_update_existing_card():
 
     updated_card_input = PydCardInput(
         word_type=WordType.NOUN,
-        relevance_description="A - Beginner",
+        relevance_id="A",
+        relevance_description="Beginner",
         german="der Baum",
         italian="l'albero",
     )
@@ -75,6 +83,7 @@ def test_update_existing_card():
     update_card_in_db(
         id_card=4711,
         word_type=updated_card_input.word_type,
+        relevance_id=updated_card_input.relevance_id,
         relevance_description=updated_card_input.relevance_description,
         german=updated_card_input.german,
         italian=updated_card_input.italian,
@@ -85,7 +94,7 @@ def test_update_existing_card():
         card = uow.cards.get(id=4711)
         assert card
         assert card.word_type == WordType.NOUN
-        assert card.relevance.description == "A - Beginner"
+        assert card.relevance.description == "Beginner"
         assert card.german == "der Baum"
         assert card.italian == "l'albero"
 
@@ -96,7 +105,8 @@ def test_missing_card_can_not_be_updated():
 
     updated_card_input = PydCardInput(
         word_type=WordType.NOUN,
-        relevance_description="A - Beginner",
+        relevance_id="A",
+        relevance_description="Beginner",
         german="der Baum",
         italian="l'albero",
     )
@@ -105,6 +115,7 @@ def test_missing_card_can_not_be_updated():
         update_card_in_db(
             id_card=4711,  # does not exist
             word_type=updated_card_input.word_type,
+            relevance_id=updated_card_input.relevance_id,
             relevance_description=updated_card_input.relevance_description,
             german=updated_card_input.german,
             italian=updated_card_input.italian,
@@ -120,14 +131,14 @@ def test_delete_card():
     card_to_delete = Card(
         id=4711,
         word_type=WordType.ADJECTIVE,
-        relevance=Relevance(id=3, description="C - Professional"),
+        relevance=Relevance(id="C", description="Professional"),
         german="weit",
         italian="large",
     )
     second_card = Card(
         id=4712,
         word_type=WordType.NOUN,
-        relevance=Relevance(id=1, description="A - Beginner"),
+        relevance=Relevance(id="A", description="Beginner"),
         german="das Boot",
         italian="la barca",
     )
@@ -151,7 +162,7 @@ def test_missing_card_can_not_be_deleted():
     card = Card(
         id=4711,
         word_type=WordType.ADJECTIVE,
-        relevance=Relevance(id=3, description="C - Professional"),
+        relevance=Relevance(id="C", description="Professional"),
         german="weit",
         italian="largo",
     )

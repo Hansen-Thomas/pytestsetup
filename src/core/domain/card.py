@@ -13,7 +13,7 @@ class Card:
         german: str,
         italian: str,
         id: int | None = None,
-        id_relevance: int | None = None,
+        id_relevance: str | None = None,
     ):
         self.id = id
         self.word_type = word_type  # example for enum-type-member

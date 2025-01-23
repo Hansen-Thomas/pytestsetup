@@ -10,7 +10,8 @@ def test_create_card_happy_path(client: TestClient, session_factory):
     # card data:
     data = {
         "word_type": WordType.VERB.value,
-        "relevance_description": "A - Beginner",
+        "relevance_id": "A",
+        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }
@@ -31,14 +32,15 @@ def test_create_card_happy_path(client: TestClient, session_factory):
         card = all_cards[0]
         assert card.german == "haben"
         assert card.italian == "avere"
-        assert card.relevance.description == "A - Beginner"
+        assert card.relevance.description == "Beginner"
 
 
 def test_create_card_unhappy_path_returns_400_and_error_message(client: TestClient):
     # card data:
     data = {
         "word_type": WordType.VERB.value,
-        "relevance_description": "A - Beginner",
+        "relevance_id": "A",
+        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }
@@ -63,7 +65,7 @@ def test_create_card_unhappy_path_returns_400_and_error_message(client: TestClie
 def test_read_card_happy_path(client: TestClient, session_factory):
     # arrange:
     with session_factory() as session:
-        relevance = Relevance(description="A - Beginner")
+        relevance = Relevance(id="A", description="Beginner")
         card_1 = Card(
             word_type=WordType.VERB,
             relevance=relevance,
@@ -92,7 +94,7 @@ def test_read_card_happy_path(client: TestClient, session_factory):
 def test_read_card_unhappy_path_throws_404(client: TestClient, session_factory):
     # arrange:
     with session_factory() as session:
-        relevance = Relevance(description="A - Beginner")
+        relevance = Relevance(id="A", description="Beginner")
         card_1 = Card(
             word_type=WordType.VERB,
             relevance=relevance,
@@ -119,7 +121,7 @@ def test_read_card_unhappy_path_throws_404(client: TestClient, session_factory):
 def test_read_cards_happy_path(client: TestClient, session_factory):
     # arrange:
     with session_factory() as session:
-        relevance = Relevance(description="A - Beginner")
+        relevance = Relevance(id="A", description="Beginner")
         card_1 = Card(
             word_type=WordType.VERB,
             relevance=relevance,
@@ -148,7 +150,7 @@ def test_read_cards_happy_path(client: TestClient, session_factory):
 def test_read_cards_pagination(client: TestClient, session_factory):
     # arrange:
     with session_factory() as session:
-        relevance = Relevance(description="A - Beginner")
+        relevance = Relevance(id="A", description="Beginner")
         card_1 = Card(
             word_type=WordType.VERB,
             relevance=relevance,
@@ -188,7 +190,8 @@ def test_update_card_happy_path(client: TestClient, session_factory):
     # wrong card data:
     data = {
         "word_type": WordType.ADJECTIVE.value,  # wrong, needs to be corrected
-        "relevance_description": "A - Beginner",
+        "relevance_id": "A",
+        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }
@@ -203,7 +206,8 @@ def test_update_card_happy_path(client: TestClient, session_factory):
 
     corrected_data = {
         "word_type": WordType.VERB.value,  # updated
-        "relevance_description": "A - Beginner",
+        "relevance_id": "A",
+        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }
@@ -225,7 +229,7 @@ def test_update_card_happy_path(client: TestClient, session_factory):
         assert card.word_type == WordType.VERB
         assert card.german == "haben"
         assert card.italian == "avere"
-        assert card.relevance.description == "A - Beginner"
+        assert card.relevance.description == "Beginner"
 
 
 def test_update_card_unhappy_path_returns_404_when_card_not_found(
@@ -236,7 +240,8 @@ def test_update_card_unhappy_path_returns_404_when_card_not_found(
     # wrong card data:
     data = {
         "word_type": WordType.ADJECTIVE.value,  # wrong, needs to be corrected
-        "relevance_description": "A - Beginner",
+        "relevance_id": "A",
+        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }
@@ -251,7 +256,8 @@ def test_update_card_unhappy_path_returns_404_when_card_not_found(
 
     corrected_data = {
         "word_type": WordType.VERB.value,  # updated
-        "relevance_description": "A - Beginner",
+        "relevance_id": "A",
+        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }
@@ -270,7 +276,8 @@ def test_delete_card_happy_path(client: TestClient, session_factory):
 
     data = {
         "word_type": WordType.VERB.value,
-        "relevance_description": "A - Beginner",
+        "relevance_id": "A",
+        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }
@@ -308,7 +315,8 @@ def test_delete_card_unhappy_path_returns_404_when_card_not_found(
     
     data = {
         "word_type": WordType.VERB.value,
-        "relevance_description": "A - Beginner",
+        "relevance_id": "A",
+        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }

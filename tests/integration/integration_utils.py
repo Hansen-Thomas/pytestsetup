@@ -13,7 +13,7 @@ def insert_cards(session: Session, records):
 
 
 def insert_tags(session: Session, records):
-    stmt = text("INSERT INTO Tag (id, value) VALUES (:id, :value)")
+    stmt = text("INSERT INTO Tag (id, value) VALUES (:id_tag, :value)")
     session.execute(stmt, records)
 
 

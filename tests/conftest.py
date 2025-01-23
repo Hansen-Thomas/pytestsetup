@@ -42,6 +42,13 @@ def unit_test_engine() -> Engine:
     engine = db._get_engine(url_key=url_key, echo=True)
     db.metadata.drop_all(bind=engine)
     db.metadata.create_all(bind=engine)
+
+    # the approach of using a fresh sqlite database (so with drop all and create
+    # all) makes as well sense in terms of database-migrations with alembic:
+    # Sqlite does not support 'ALTER TABLE' statements, so the only (or maybe
+    # easiest) way to change the schema is to drop all tables and create them
+    # again. Thus, by always using a freshly created database we ensure that we
+    # do not need any alembic-migrations for Sqlite.
     return engine
 
 

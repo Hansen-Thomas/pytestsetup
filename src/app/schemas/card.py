@@ -7,6 +7,7 @@ from core.domain.word_type import WordType
 
 class PydCardInput(BaseModel):
     word_type: WordType
+    relevance_id: str
     relevance_description: str
     german: str
     italian: str
