@@ -24,7 +24,8 @@ def create_card_in_db(
             relevance = uow.relevance_levels.get_by_id(id=relevance_id)
             if not relevance:
                 relevance = Relevance(
-                    id=relevance_id, description=relevance_description
+                    id=relevance_id,
+                    description=relevance_description,
                 )
 
             # Processing:
