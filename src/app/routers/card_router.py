@@ -22,20 +22,17 @@ router = APIRouter()
 )
 async def create_card(
     request: Request,
-    # card_input: card_schemas.PydCardInput,
-    # card_input: card_schemas.PydCardInput = Form(),
     session_factory=Depends(get_session_factory),
 ) -> Any:
     
-    # check if input is provided as JSON or as form-content:
+    # manually validate input depending on content-type:
     if request.headers.get("content-type") == "application/json":
         # get data from JSON-body:
-        card_input = await request.json()
-        card_input = card_schemas.PydCardInput(**card_input)
+        input_data = await request.json()
     else:
         # get data from forms-body:
-        form_data = await request.form()
-        card_input = card_schemas.PydCardInput(**form_data)
+        input_data = await request.form()
+    card_input = card_schemas.PydCardInput(**input_data)
 
     try:
         # add card:
