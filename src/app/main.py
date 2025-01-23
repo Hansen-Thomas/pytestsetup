@@ -7,10 +7,10 @@ from fastapi.staticfiles import StaticFiles
 from app.routers import card_router
 import core.db.orm as orm
 
+orm.start_mappers()
+
 PATH_STATIC = Path(__file__).parent / "static"
 
-if not orm.ORM_STARTED:
-    orm.start_mappers()
 
 app = FastAPI()
 app.include_router(card_router.router)

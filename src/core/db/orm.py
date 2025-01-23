@@ -8,14 +8,14 @@ from core.db.tables.relevance_table import relevance_table
 from core.db.tables.tag_table import tag_table
 from core.db.tables.card_has_tag_table import card_has_tag_table
 
-ORM_STARTED = False
+
+mapping_registry = registry()
 
 
 def start_mappers():
-    global ORM_STARTED
-    ORM_STARTED = True
+    if has_mappings():
+        return
 
-    mapping_registry = registry()
     mapping_registry.map_imperatively(
         Card,
         card_table,
@@ -65,3 +65,10 @@ def start_mappers():
         relevance_table,
         properties={},
     )
+
+
+def has_mappings():
+    """
+    Is used to check if the mapping_registry already has mappings.
+    """
+    return bool(list(mapping_registry.mappers))
