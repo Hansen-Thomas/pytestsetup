@@ -6,6 +6,7 @@ from fastapi.responses import RedirectResponse
 from app.dependencies import get_session_factory
 import app.schemas.card as card_schemas
 from app.templates import templates
+from core.domain.word_type import WordType
 import core.exceptions as exc
 import core.services.cards.crud as crud
 import core.services.unit_of_work as uow
@@ -28,9 +29,11 @@ async def create_card(
     
     # check if input is provided as JSON or as form-content:
     if request.headers.get("content-type") == "application/json":
+        # get data from JSON-body:
         card_input = await request.json()
         card_input = card_schemas.PydCardInput(**card_input)
     else:
+        # get data from forms-body:
         form_data = await request.form()
         card_input = card_schemas.PydCardInput(**form_data)
 
@@ -91,6 +94,7 @@ def new_card(request: Request):
         return templates.TemplateResponse(
             request=request,
             name="cards/new_card.html",
+            context={"word_type_enum": WordType}
         )
 
 

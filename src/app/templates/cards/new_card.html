@@ -1,16 +1,16 @@
 {% extends "base.html" %} {% block title %}Card{% endblock %} {% block main_content %}
 <main>
-    <h3>Card</h3>
+    <h3>Add new card</h3>
 
-    <!-- form of a card -->
+    <!-- form for a new card -->
     <form action="/cards" method="POST">
         <button type="submit">Save</button>
         <div>
             <label for="word_type">Word type:</label>
             <select id="word_type" name="word_type">
-                <option value="NOUN">Noun</option>
-                <option value="VERB">Verb</option>
-                <option value="ADJECTIVE">Adjective</option>
+                {% for enum_value in word_type_enum.all() %}
+                <option value="{{ enum_value }}">{{ enum_value | capitalize }}</option>
+                {% endfor %}
             </select>
         </div>
         <div>

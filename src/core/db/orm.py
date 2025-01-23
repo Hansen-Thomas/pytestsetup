@@ -8,8 +8,13 @@ from core.db.tables.relevance_table import relevance_table
 from core.db.tables.tag_table import tag_table
 from core.db.tables.card_has_tag_table import card_has_tag_table
 
+ORM_STARTED = False
+
 
 def start_mappers():
+    global ORM_STARTED
+    ORM_STARTED = True
+
     mapping_registry = registry()
     mapping_registry.map_imperatively(
         Card,
@@ -35,10 +40,10 @@ def start_mappers():
                 # connected to other cards (normal 1:n-situation in DB).
                 # Deleting the ORM-mapped relevance-object would issue
                 # SQL-statements to delete the corresponding DB-record.
-                # This again is very likely to not work because the DB cannot 
+                # This again is very likely to not work because the DB cannot
                 # violate that foreign-key-constraint as this relevance-record
                 # is very likely to be connected to other cards in DB already.
-                # 
+                #
                 # We always need to differentiate between the ORM-objects and
                 # the DB-records. The cascade-parameter here deals with the
                 # cascading within the ORM-object tree. The cascading in the DB
