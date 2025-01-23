@@ -14,9 +14,9 @@ def test_session_can_load_cards(session: Session):
     """
     # Arrange:
     records_relevance = [
-        {"id": 1, "description": "A - Beginner"},
-        {"id": 2, "description": "B - Intermediate"},
-        {"id": 3, "description": "C - Professional"},
+        {"id": "A", "description": "Beginner"},
+        {"id": "B", "description": "Intermediate"},
+        {"id": "C", "description": "Professional"},
     ]
     plain_sql_utils.insert_relevance_levels(
         session=session,
@@ -27,14 +27,14 @@ def test_session_can_load_cards(session: Session):
         {
             "id": 1,
             "word_type": "NOUN",
-            "id_relevance": 1,
+            "id_relevance": "A",
             "german": "das Haus",
             "italian": "la casa",
         },
         {
             "id": 2,
             "word_type": "NOUN",
-            "id_relevance": 2,
+            "id_relevance": "B",
             "german": "der Baum",
             "italian": "l'albero",
         },
@@ -51,14 +51,14 @@ def test_session_can_load_cards(session: Session):
         Card(
             id=1,
             word_type=WordType.NOUN,
-            relevance=Relevance(id=1, description="A - Beginner"),
+            relevance=Relevance(id="A", description="Beginner"),
             german="das Haus",
             italian="la casa",
         ),
         Card(
             id=2,
             word_type=WordType.NOUN,
-            relevance=Relevance(id=2, description="B - Intermediate"),
+            relevance=Relevance(id="B", description="Intermediate"),
             german="der Baum",
             italian="l'albero",
         ),
