@@ -4,7 +4,7 @@ class Relevance:
         self.description = description
 
     def __hash__(self) -> int:
-        return hash(self.description)
+        return hash(self.id)
 
     def __eq__(self, other: object) -> bool:
         if other is None:

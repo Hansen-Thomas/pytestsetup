@@ -1,0 +1,37 @@
+{% extends "base.html" %} {% block title %}Card{% endblock %} {% block main_content %}
+<main>
+    <h3>{% if card and card.id %}Edit card{% else %}Add new card{% endif %}</h3>
+
+    <!-- form for a inserting/editing a card -->
+    <form action="/cards" method="POST">
+        <button class="form-group" type="submit">Save</button>
+        <input type="hidden" name="_method" value="{% if card.id %}PUT{% else %}POST{% endif %}">
+        <input type="hidden" name="id_card" value="{% if card.id %}{{ card.id }}{% endif %}">
+        <div class="form-group">
+            <label for="german">German:</label>
+            <input id="german" name="german" type="text" value="{{ card.german }}">
+        </div>
+        <div class="form-group">
+            <label for="italian">Italian:</label>
+            <input id="italian" name="italian" type="text" value="{{ card.italian }}">
+        </div>
+        <div class="form-group">
+            <label for="word_type">Word type:</label>
+            <select id="word_type" name="word_type">
+                {% for enum_value in word_type_enum.all() %}
+                <option value="{{ enum_value }}" {% if card.word_type.value==enum_value %}selected{% endif %}>{{
+                    enum_value | capitalize }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="relevance">Relevance:</label>
+            <select id="relevance" name="relevance_id">
+                <option value="A" {% if card.id_relevance=="A" %}selected{% endif %}>A - Beginner</option>
+                <option value="B" {% if card.id_relevance=="B" %}selected{% endif %}>B - Intermediate</option>
+                <option value="C" {% if card.id_relevance=="C" %}selected{% endif %}>C - Professional</option>
+            </select>
+        </div>
+    </form>
+</main>
+{% endblock %}

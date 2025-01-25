@@ -7,11 +7,16 @@ from core.domain.relevance import Relevance
 
 
 def test_create_card_happy_path(client: TestClient, session_factory):
+    # insert relevance:
+    with session_factory() as session:
+        relevance = Relevance(id="A", description="Beginner")
+        session.add(relevance)
+        session.commit()
+
     # card data:
     data = {
         "word_type": WordType.VERB.value,
         "relevance_id": "A",
-        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }
@@ -35,12 +40,19 @@ def test_create_card_happy_path(client: TestClient, session_factory):
         assert card.relevance.description == "Beginner"
 
 
-def test_create_card_unhappy_path_returns_400_and_error_message(client: TestClient):
+def test_create_card_unhappy_path_returns_400_and_error_message(
+    client: TestClient, session_factory
+):
+    # insert relevance:
+    with session_factory() as session:
+        relevance = Relevance(id="A", description="Beginner")
+        session.add(relevance)
+        session.commit()
+
     # card data:
     data = {
         "word_type": WordType.VERB.value,
         "relevance_id": "A",
-        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }
@@ -186,12 +198,16 @@ def test_read_cards_pagination(client: TestClient, session_factory):
 
 def test_update_card_happy_path(client: TestClient, session_factory):
     # TODO: Replace arrange-setup with direct db-operation.
+    # insert relevance:
+    with session_factory() as session:
+        relevance = Relevance(id="A", description="Beginner")
+        session.add(relevance)
+        session.commit()
 
     # wrong card data:
     data = {
         "word_type": WordType.ADJECTIVE.value,  # wrong, needs to be corrected
         "relevance_id": "A",
-        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }
@@ -207,7 +223,6 @@ def test_update_card_happy_path(client: TestClient, session_factory):
     corrected_data = {
         "word_type": WordType.VERB.value,  # updated
         "relevance_id": "A",
-        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }
@@ -233,15 +248,20 @@ def test_update_card_happy_path(client: TestClient, session_factory):
 
 
 def test_update_card_unhappy_path_returns_404_when_card_not_found(
-    client: TestClient,
+    client: TestClient, session_factory
 ):
     # TODO: Replace arrange-setup with direct db-operation.
+
+    # insert relevance:
+    with session_factory() as session:
+        relevance = Relevance(id="A", description="Beginner")
+        session.add(relevance)
+        session.commit()
 
     # wrong card data:
     data = {
         "word_type": WordType.ADJECTIVE.value,  # wrong, needs to be corrected
         "relevance_id": "A",
-        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }
@@ -257,7 +277,6 @@ def test_update_card_unhappy_path_returns_404_when_card_not_found(
     corrected_data = {
         "word_type": WordType.VERB.value,  # updated
         "relevance_id": "A",
-        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }
@@ -273,11 +292,15 @@ def test_update_card_unhappy_path_returns_404_when_card_not_found(
 
 def test_delete_card_happy_path(client: TestClient, session_factory):
     # TODO: Replace arrange-setup with direct db-operation.
+    # insert relevance:
+    with session_factory() as session:
+        relevance = Relevance(id="A", description="Beginner")
+        session.add(relevance)
+        session.commit()
 
     data = {
         "word_type": WordType.VERB.value,
         "relevance_id": "A",
-        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }
@@ -312,11 +335,15 @@ def test_delete_card_unhappy_path_returns_404_when_card_not_found(
     client: TestClient, session_factory
 ):
     # TODO: Replace arrange-setup with direct db-operation.
-    
+    # insert relevance:
+    with session_factory() as session:
+        relevance = Relevance(id="A", description="Beginner")
+        session.add(relevance)
+        session.commit()
+
     data = {
         "word_type": WordType.VERB.value,
         "relevance_id": "A",
-        "relevance_description": "Beginner",
         "german": "haben",
         "italian": "avere",
     }

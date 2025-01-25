@@ -105,6 +105,8 @@ class DbUnitOfWork(AbstractUnitOfWork):
         super().__exit__(*args)
         self.session.close()
         logger.debug("DB UOW: Exited, session closed.")
+        engine = self.session.get_bind()
+        logger.debug(f"Status connection-pool: {engine.pool.status()}")
 
     def commit(self) -> None:
         self.session.commit()

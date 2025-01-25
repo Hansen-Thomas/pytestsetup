@@ -14,11 +14,16 @@ from core.services.unit_of_work import FakeUnitOfWork, DbUnitOfWork
 
 
 def test_new_card_can_be_added(session_factory):
+    # insert relevance:
+    with session_factory() as session:
+        relevance = Relevance(id="A", description="Beginner")
+        session.add(relevance)
+        session.commit()
+
     uow = DbUnitOfWork(session_factory=session_factory)
     create_card_in_db(
         word_type=WordType.NOUN,
         relevance_id="A",
-        relevance_description="Beginner",
         german="das Haus",
         italian="la casa",
         uow=uow,
@@ -35,10 +40,11 @@ def test_new_card_can_be_added(session_factory):
 
 def test_duplicate_card_can_not_be_added():
     uow = FakeUnitOfWork()
+    uow.relevance_levels.add(Relevance(id="A", description="Beginner"))
+
     create_card_in_db(
         word_type=WordType.NOUN,
         relevance_id="A",
-        relevance_description="Beginner",
         german="das Haus",
         italian="la casa",
         uow=uow,
@@ -47,7 +53,6 @@ def test_duplicate_card_can_not_be_added():
         create_card_in_db(
             word_type=WordType.NOUN,
             relevance_id="A",
-            relevance_description="Beginner",
             german="das Haus",
             italian="la casa",
             uow=uow,
@@ -70,12 +75,12 @@ def test_update_existing_card():
         german="der Baum",
         italian="l'albero",
     )
+    uow.relevance_levels.add(existing_card.relevance)
     uow.cards.add(existing_card)
 
     updated_card_input = PydCardInput(
         word_type=WordType.NOUN,
         relevance_id="A",
-        relevance_description="Beginner",
         german="der Baum",
         italian="l'albero",
     )
@@ -84,7 +89,6 @@ def test_update_existing_card():
         id_card=4711,
         word_type=updated_card_input.word_type,
         relevance_id=updated_card_input.relevance_id,
-        relevance_description=updated_card_input.relevance_description,
         german=updated_card_input.german,
         italian=updated_card_input.italian,
         uow=uow,
@@ -106,7 +110,6 @@ def test_missing_card_can_not_be_updated():
     updated_card_input = PydCardInput(
         word_type=WordType.NOUN,
         relevance_id="A",
-        relevance_description="Beginner",
         german="der Baum",
         italian="l'albero",
     )
@@ -116,7 +119,6 @@ def test_missing_card_can_not_be_updated():
             id_card=4711,  # does not exist
             word_type=updated_card_input.word_type,
             relevance_id=updated_card_input.relevance_id,
-            relevance_description=updated_card_input.relevance_description,
             german=updated_card_input.german,
             italian=updated_card_input.italian,
             uow=uow,

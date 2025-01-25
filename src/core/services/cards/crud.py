@@ -13,7 +13,6 @@ from core.utils.logging_utils import log_method
 def create_card_in_db(
     word_type: WordType,
     relevance_id: str,
-    relevance_description: str,
     german: str,
     italian: str,
     uow: AbstractUnitOfWork,
@@ -23,10 +22,7 @@ def create_card_in_db(
             # Business validation:
             relevance = uow.relevance_levels.get_by_id(id=relevance_id)
             if not relevance:
-                relevance = Relevance(
-                    id=relevance_id,
-                    description=relevance_description,
-                )
+                raise ResourceNotFoundError("Relevance", relevance_id)
 
             # Processing:
             new_card = Card(
@@ -173,7 +169,6 @@ def update_card_in_db(
     id_card: int,
     word_type: WordType,
     relevance_id: str,
-    relevance_description: str,
     german: str,
     italian: str,
     uow: AbstractUnitOfWork,
@@ -189,10 +184,7 @@ def update_card_in_db(
 
         relevance = uow.relevance_levels.get_by_id(relevance_id)
         if not relevance:
-            relevance = Relevance(
-                id=relevance_id,
-                description=relevance_description,
-            )
+            raise ResourceNotFoundError("Relevance", relevance_id)
         card.relevance = relevance
 
         uow.commit()

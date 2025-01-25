@@ -35,9 +35,9 @@ class FakeRelevanceRepository(AbstractRelevanceRepository):
         return list(self._relevance_levels)
 
     def get_by_id(self, id: str) -> Relevance | None:
-        relevance = Relevance(id=id)
-        if relevance in self._relevance_levels:
-            return relevance
+        relevance = [r for r in self._relevance_levels if r.id == id]
+        if relevance:
+            return relevance[0]
         return None
 
     def delete(self, relevance: Relevance) -> None:

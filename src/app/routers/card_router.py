@@ -6,6 +6,7 @@ from fastapi.responses import RedirectResponse
 from app.dependencies import get_session_factory
 import app.schemas.card as card_schemas
 from app.templates import templates
+from core.domain.card import Card
 from core.domain.word_type import WordType
 import core.exceptions as exc
 import core.services.cards.crud as crud
@@ -24,35 +25,41 @@ async def create_card(
     request: Request,
     session_factory=Depends(get_session_factory),
 ) -> Any:
-    
-    # manually validate input depending on content-type:
-    if request.headers.get("content-type") == "application/json":
-        # get data from JSON-body:
-        input_data = await request.json()
-    else:
-        # get data from forms-body:
-        input_data = await request.form()
-    card_input = card_schemas.PydCardInput(**input_data)
-
     try:
-        # add card:
-        new_domain_card = crud.create_card_in_db(
-            **card_input.model_dump(),
-            uow=uow.DbUnitOfWork(session_factory=session_factory),
-        )
-        # create response:
-        accept = request.headers.get("accept")
-        if accept and "text/html" in accept:
+        # manually validate input depending on content-type:
+        if request.headers.get("content-type") == "application/json":
+            # process JSON-body:
+            input_data = await request.json()
+            card_input = card_schemas.PydCardInput(**input_data)
+            new_domain_card = crud.create_card_in_db(
+                **card_input.model_dump(),
+                uow=uow.DbUnitOfWork(session_factory=session_factory),
+            )
+            return card_schemas.convert_to_pydantic(new_domain_card)
+        else:
+            # get data from forms-body:
+            input_data = await request.form()
+            _method = input_data.get("_method")
+            if _method == "PUT":
+                update_card(
+                    id_card=int(input_data.get("id_card")),
+                    card_input=card_schemas.PydCardInput(**input_data),
+                    session_factory=session_factory,
+                )
+            else:
+                card_input = card_schemas.PydCardInput(**input_data)
+                new_domain_card = crud.create_card_in_db(
+                    **card_input.model_dump(),
+                    uow=uow.DbUnitOfWork(session_factory=session_factory),
+                )
             return RedirectResponse(url="/cards", status_code=303)
             # (change status-code to change from POST- to GET-request.)
-        else:
-            return card_schemas.convert_to_pydantic(new_domain_card)
     except exc.DuplicateResourceError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Card already exists.",
         )
-    
+
 
 @router.get("/cards", response_model=list[card_schemas.PydCardResponse])
 def read_cards(
@@ -90,13 +97,22 @@ def new_card(request: Request):
     if accept and "text/html" in accept:
         return templates.TemplateResponse(
             request=request,
-            name="cards/new_card.html",
-            context={"word_type_enum": WordType}
+            name="cards/card.html",
+            context={
+                "word_type_enum": WordType,
+                "card": Card(  # empty dummy card for form
+                    word_type=WordType.NOUN,
+                    german="",
+                    italian="",
+                    relevance=None,
+                ),
+            },
         )
 
 
 @router.get("/cards/{id_card}", response_model=card_schemas.PydCardResponse)
 def read_card(
+    request: Request,
     id_card: int,
     session_factory=Depends(get_session_factory),
 ) -> Any:
@@ -105,7 +121,19 @@ def read_card(
             id_card=id_card,
             uow=uow.DbUnitOfWork(session_factory=session_factory),
         )
-        return card_schemas.convert_to_pydantic(domain_card)
+
+        accept = request.headers.get("accept")
+        if accept and "text/html" in accept:
+            return templates.TemplateResponse(
+                request=request,
+                name="cards/card.html",
+                context={
+                    "word_type_enum": WordType,
+                    "card": domain_card,
+                },
+            )
+        else:
+            return card_schemas.convert_to_pydantic(domain_card)
     except exc.ResourceNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
