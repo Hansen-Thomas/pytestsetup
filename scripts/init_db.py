@@ -1,5 +1,5 @@
 from sqlalchemy import text
-import db
+import core.db as db
 
 
 def setup_schema():
