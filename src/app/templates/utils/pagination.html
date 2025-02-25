@@ -1,0 +1,28 @@
+<!-- Pim-Records pagination: -->
+<div class="pagination">
+  <a
+    href="/cards?page=1&page_size={{ pagination_result.page_size }}"
+    >First</a
+  >
+
+  <a
+    href="/cards?page={{ pagination_result.current_page - 1 }}&page_size={{
+    pagination_result.page_size }}"
+    >Previous</a
+  >
+
+  <span
+    >{{ pagination_result.current_page }} of {{
+    pagination_result.count_pages }}</span
+  >
+
+  <a
+    href="/cards?page={{ pagination_result.current_page + 1 }}&page_size={{ pagination_result.page_size }}"
+    >Next</a
+  >
+
+  <a
+    href="/cards?page={{ pagination_result.count_pages }}&page_size={{ pagination_result.page_size }}"
+    >Last</a
+  >
+</div>

@@ -24,4 +24,4 @@ if __name__ == "__main__":
     logging_utils.setup_logging()
     sys.excepthook = logging_utils.global_exception_hook
 
-    uvicorn.run("main:app", host="localhost", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
