@@ -58,7 +58,10 @@ class FakeCardRepository(AbstractCardRepository):
 
     @override
     def get_list(self, skip: int, limit: int) -> tuple[int, list[Card]]:
-        return (len(self._cards), list(self._cards))
+        return (
+            len(self._cards),
+            list(sorted(self._cards, key=lambda x: x.german)),
+        )
 
     @override
     def delete(self, card: Card) -> None:

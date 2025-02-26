@@ -193,7 +193,7 @@ def test_read_cards_pagination(client: TestClient, session_factory):
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 1
-    assert data[0]["german"] == "das Haus"
+    assert data[0]["german"] == "haben"  # ordered by german
 
 
 def test_update_card_happy_path(client: TestClient, session_factory):
